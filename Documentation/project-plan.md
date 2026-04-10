@@ -280,11 +280,11 @@ Observability, scaling, and operations
 
 | Service              | Responsibility  | Language | Scaling    |
 | -------------------- | --------------- | -------- | ---------- |
-| api-server           | Management API  | Go       | Horizontal |
-| build-controller     | Build pipeline  | Go       | Single     |
-| workflow-coordinator | Workflow engine | Go       | Horizontal |
-| schema-registry      | Schema storage  | Go       | Horizontal |
-| artifact-store       | Metadata        | Go       | Horizontal |
+| api-server           | Management API  | Python   | Horizontal |
+| build-controller     | Build pipeline  | Python   | Single     |
+| workflow-coordinator | Workflow engine | Python   | Horizontal |
+| schema-registry      | Schema storage  | Python   | Horizontal |
+| artifact-store       | Metadata        | Python   | Horizontal |
 
 ---
 
