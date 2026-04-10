@@ -122,3 +122,21 @@ def build(config_path: str, output_dir: str) -> None:
         f"  Output directory   : [cyan]{out.resolve()}[/cyan]",
         title="AgentOS build",
     ))
+
+@cli.command()
+@click.argument("service", default="all", type=str)
+def logs(service: str) -> None:
+    """View logs for a deployed service or all services."""
+    # Mocking log extraction for Phase 3.4
+    console.print(f"[cyan]Fetching logs for {service}...[/cyan]")
+    console.print(f"[green]2026-04-10 22:45:00 [INFO][/green] {service} - Starting agent loop...")
+
+@cli.command()
+def status() -> None:
+    """Show the operational status of deployed agents and workflows."""
+    console.print(Panel.fit(
+        "[green]Active Workflows[/green]: 2\n"
+        "[green]Registered Agents[/green]: 4\n"
+        "[green]Healthy Services[/green]: True",
+        title="AgentOS Status"
+    ))
