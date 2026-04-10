@@ -23,13 +23,13 @@ The platform treats four entity types as first-class citizens. All configuration
 - **Agent** — An autonomous decision-making unit. Perceives context, selects actions, invokes tools and models. Stateful across turns within a session.  
 - **Tool** — A callable function with a typed schema. Agents invoke tools for concrete operations: API calls, database queries, file I/O, external services.  
 - **Model** — An inference endpoint with a defined input/output contract. May be hosted (OpenAI, Anthropic, Bedrock) or locally deployed (vLLM).  
-- **Workflow** — A directed execution graph composed of agents, tools, model calls, and control flow nodes (branches, loops, parallel fans).  
+- **Orchestration** — A directed execution graph using LangGraph composed of agents, tools, model calls, and control flow nodes (branches, loops, parallel fans).  
 
 ---
 
 ### 2.2 Communication Model
 
-All inter-entity communication is message-driven and asynchronous. Components communicate via a central message bus. Every message carries:
+All inter-entity communication is message-driven and asynchronous. Components communicate via a central message bus (Kafka). Every message carries:
 
 - `correlation_id` (request trace)  
 - `session_id` (user/task group)  
@@ -389,5 +389,3 @@ Errors propagate as structured messages:
   "context": { "query": "latest AI news" }
 }
 ```
-
----
