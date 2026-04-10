@@ -8,9 +8,9 @@ AgentOS is a config-driven orchestration platform for building, deploying, and m
 ---
 
 ## ⚡ The Output - The UI
-We've added a stunning React-styled Dashboard built directly into the control API. By deploying the platform, you'll be able to access the web UI at `http://localhost:8000/`.
+We've added a live dashboard directly into the control API. By deploying the platform, you'll be able to access the web UI at `http://localhost:8000/`.
 
-The UI allows you to visually inspect the running Workflows, monitor Registered Tools, and single-click upload the generated zip deployments in an immersive dark mode console setting.
+The UI lets you inspect workflows, monitor registered tools, upload ZIP deployments, and chat directly with any running agent service from the same control plane.
 
 ---
 
@@ -49,25 +49,29 @@ uvicorn sputniq.api.server:app --reload --host 0.0.0.0 --port 8000
 
 ---
 
-## 🏗️ Generating & Deploying a Sample Agent App
+## 🏗️ Generating & Deploying Sample Agent Apps
 
 AgentOS supports deploying your entire Agent application (source code and `config.json`) as a single zip archive.
 
-1. **Generate the dummy deployment**:
-   We have a script to rapidly generate a functional sample app and package it:
-
+1. **Package the simple weather demo**:
    ```bash
    python scripts/create_sample_app.py
    ```
-   *(This creates `sample_app.zip` containing a `config.json` and basic python agents)*
+   *(This creates `sample_app.zip` from the checked-in `sample_app/` directory.)*
 
-2. **Deploy via the UI (Easiest)**:
-   Navigate to `http://localhost:8000/` and upload the newly generated `sample_app.zip`. The UI will reflect the deployed services in real-time.
+2. **Package the complex mission-control demo**:
+   ```bash
+   python scripts/create_complex_agent_app.py
+   ```
+   *(This creates `complex_agent_app.zip` with multiple agents, tools, and workflows.)*
 
-3. **Deploy via CLI/cURL**:
+3. **Deploy via the UI (Easiest)**:
+   Navigate to `http://localhost:8000/`, upload one of the ZIP archives, then use the built-in chatbox to talk to any running agent deployment.
+
+4. **Deploy via CLI/cURL**:
    You can deploy the sample application programmatically to the Control API:
    ```bash
-   curl -X POST -F "file=@sample_app.zip" http://localhost:8000/api/v1/registry/upload-zip
+   curl -X POST -F "file=@complex_agent_app.zip" http://localhost:8000/api/v1/registry/upload-zip
    ```
 
 ---

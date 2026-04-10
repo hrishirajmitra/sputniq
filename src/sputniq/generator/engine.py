@@ -49,6 +49,7 @@ def _render_service(
         ("Dockerfile.j2", "Dockerfile"),
         ("service.yaml.j2", "service.yaml"),
         ("requirements.txt.j2", "requirements.txt"),
+        ("service_runner.py.j2", ".sputniq_service_runner.py"),
     ]:
         rendered = env.get_template(tmpl_name).render(ctx)
         (service_dir / out_name).write_text(rendered, "utf-8")

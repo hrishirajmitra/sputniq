@@ -1,0 +1,187 @@
+{
+  "platform": {
+    "name": "mission-control-demo",
+    "version": "1.0.0",
+    "namespace": "demo",
+    "runtime": "docker-compose",
+    "region": "local"
+  },
+  "agents": [
+    {
+      "id": "mission-control-agent",
+      "description": "Primary operator that builds plans, risk briefs, and resource recommendations.",
+      "entrypoint": "src/agents/mission_control.py:MissionControlAgent",
+      "model": "ops-analyst",
+      "tools": [
+        "briefing-search",
+        "task-graph",
+        "risk-matrix",
+        "resource-forecast"
+      ],
+      "system_prompt": "Drive projects forward with crisp operational plans."
+    },
+    {
+      "id": "review-agent",
+      "description": "Secondary reviewer that pressure-tests the plan and highlights hidden issues.",
+      "entrypoint": "src/agents/reviewer.py:ReviewAgent",
+      "model": "ops-analyst",
+      "tools": [
+        "briefing-search",
+        "risk-matrix"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "briefing-search",
+      "entrypoint": "src/tools/briefing_search.py:search_briefings",
+      "schema": {
+        "input": {
+          "query": {
+            "type": "string"
+          }
+        },
+        "output": {
+          "matches": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    {
+      "id": "task-graph",
+      "entrypoint": "src/tools/task_graph.py:create_task_graph",
+      "schema": {
+        "input": {
+          "goal": {
+            "type": "string"
+          }
+        },
+        "output": {
+          "phases": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    {
+      "id": "risk-matrix",
+      "entrypoint": "src/tools/risk_matrix.py:generate_risk_matrix",
+      "schema": {
+        "input": {
+          "goal": {
+            "type": "string"
+          }
+        },
+        "output": {
+          "risks": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    {
+      "id": "resource-forecast",
+      "entrypoint": "src/tools/resource_forecast.py:forecast_resources",
+      "schema": {
+        "input": {
+          "goal": {
+            "type": "string"
+          }
+        },
+        "output": {
+          "forecast": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "ops-analyst",
+      "provider": "custom",
+      "capabilities": [
+        "chat",
+        "planning",
+        "analysis"
+      ]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "mission-control-workflow",
+      "description": "Triages a mission, fans out analysis, then reviews the combined recommendation.",
+      "entrypoint_step": "intake-step",
+      "steps": [
+        {
+          "id": "intake-step",
+          "type": "agent",
+          "ref": "mission-control-agent",
+          "next": [
+            "analysis-fanout"
+          ]
+        },
+        {
+          "id": "analysis-fanout",
+          "type": "parallel",
+          "ref": "ops-analyst",
+          "next": [
+            "briefing-step",
+            "risk-step",
+            "forecast-step"
+          ]
+        },
+        {
+          "id": "briefing-step",
+          "type": "tool",
+          "ref": "briefing-search",
+          "next": [
+            "review-step"
+          ]
+        },
+        {
+          "id": "risk-step",
+          "type": "tool",
+          "ref": "risk-matrix",
+          "next": [
+            "review-step"
+          ]
+        },
+        {
+          "id": "forecast-step",
+          "type": "tool",
+          "ref": "resource-forecast",
+          "next": [
+            "review-step"
+          ]
+        },
+        {
+          "id": "review-step",
+          "type": "agent",
+          "ref": "review-agent"
+        }
+      ]
+    },
+    {
+      "id": "rapid-review-workflow",
+      "description": "Runs a short review loop for fast executive check-ins.",
+      "entrypoint_step": "review-intake",
+      "steps": [
+        {
+          "id": "review-intake",
+          "type": "agent",
+          "ref": "review-agent",
+          "next": [
+            "review-risk-pass"
+          ]
+        },
+        {
+          "id": "review-risk-pass",
+          "type": "tool",
+          "ref": "risk-matrix"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Partner Launch Delay",
+    "scenario": "A partner-facing release slipped because field teams were not briefed on last-minute dependency changes.",
+    "lesson": "Pair every launch checklist with a field enablement review 24 hours before release.",
+    "tags": ["launch", "partner", "support"]
+  },
+  {
+    "title": "Migration Dry Run Saves Rollout",
+    "scenario": "A dry-run import revealed hidden null handling issues before customer data was touched.",
+    "lesson": "Force a sampled reconciliation pass before any data migration is approved.",
+    "tags": ["data", "migration", "quality"]
+  },
+  {
+    "title": "Ops Escalation Loop",
+    "scenario": "An operations team reduced incident response time by naming a single owner per lane.",
+    "lesson": "Parallel work still needs singular accountability per stream.",
+    "tags": ["operations", "ownership", "response"]
+  },
+  {
+    "title": "Executive Review Sprint",
+    "scenario": "A compressed planning cycle worked once checkpoints were tightened and decisions were logged visibly.",
+    "lesson": "Short timelines only work when decision checkpoints are explicit and non-negotiable.",
+    "tags": ["review", "planning", "governance"]
+  }
+]

@@ -1,0 +1,224 @@
+import importlib.util
+import inspect
+import json
+from pathlib import Path
+from typing import Any
+
+import uvicorn
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
+
+APP_ROOT = Path(__file__).resolve().parent
+CONFIG_PATH = APP_ROOT / ".sputniq_service.json"
+_ENTRYPOINT_CACHE: dict[str, Any] = {}
+
+
+def _load_service_config() -> dict[str, Any]:
+    return json.loads(CONFIG_PATH.read_text("utf-8"))
+
+
+SERVICE_CONFIG = _load_service_config()
+
+
+def _load_entrypoint(entrypoint: str) -> Any:
+    cached = _ENTRYPOINT_CACHE.get(entrypoint)
+    if cached is not None:
+        return cached
+
+    file_part, attr = entrypoint.split(":", 1)
+    module_path = APP_ROOT / file_part
+    if not module_path.exists():
+        raise FileNotFoundError(f"Entrypoint file not found: {module_path}")
+
+    module_name = (
+        f"sputniq_runtime_{SERVICE_CONFIG['service_id'].replace('-', '_')}_"
+        f"{abs(hash(entrypoint))}"
+    )
+    spec = importlib.util.spec_from_file_location(module_name, module_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Could not load module for entrypoint {entrypoint}")
+
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    target = getattr(module, attr, None)
+    if target is None:
+        raise AttributeError(f"Entrypoint '{attr}' not found in {file_part}")
+
+    _ENTRYPOINT_CACHE[entrypoint] = target
+    return target
+
+
+async def _maybe_await(result: Any) -> Any:
+    if inspect.isawaitable(result):
+        return await result
+    return result
+
+
+async def _invoke_tool(tool_id: str, arguments: dict[str, Any]) -> Any:
+    tool_map = SERVICE_CONFIG.get("tool_entrypoints", {})
+    entrypoint = tool_map.get(tool_id)
+    if entrypoint is None:
+        raise KeyError(f"Unknown tool '{tool_id}'")
+
+    handler = _load_entrypoint(entrypoint)
+    if inspect.isclass(handler):
+        handler = handler()
+    if not callable(handler):
+        raise TypeError(f"Tool entrypoint '{entrypoint}' is not callable")
+
+    return await _maybe_await(handler(**arguments))
+
+
+async def _default_model(model_id: str, messages: list[dict[str, str]], **_: Any) -> str:
+    last_user = next(
+        (
+            message.get("content", "")
+            for message in reversed(messages)
+            if message.get("role") == "user"
+        ),
+        "",
+    )
+    return f"[simulated:{model_id}] {last_user}".strip()
+
+
+class AgentContext:
+    def __init__(
+        self,
+        *,
+        agent_id: str,
+        input_data: dict[str, Any],
+        session_id: str | None = None,
+        correlation_id: str | None = None,
+    ) -> None:
+        self.agent_id = agent_id
+        self.input = input_data
+        self.session_id = session_id or "demo-session"
+        self.correlation_id = correlation_id or "demo-correlation"
+        self.memory = input_data.get("history", [])
+        self._events: list[dict[str, Any]] = []
+
+    async def tool(self, tool_id: str, **kwargs: Any) -> Any:
+        self.emit("tool_call", {"tool_id": tool_id, "arguments": kwargs})
+        result = await _invoke_tool(tool_id, kwargs)
+        self.emit("tool_result", {"tool_id": tool_id, "result": result})
+        return result
+
+    async def model(self, model_id: str, messages: list[dict[str, str]], **kwargs: Any) -> str:
+        self.emit("model_call", {"model_id": model_id, "messages": len(messages)})
+        result = await _default_model(model_id, messages, **kwargs)
+        self.emit("model_result", {"model_id": model_id, "content": result})
+        return result
+
+    def emit(self, event_type: str, payload: Any = None) -> None:
+        self._events.append({"type": event_type, "payload": payload})
+
+    @property
+    def events(self) -> list[dict[str, Any]]:
+        return list(self._events)
+
+
+class ChatRequest(BaseModel):
+    message: str = Field(..., min_length=1)
+    history: list[dict[str, Any]] = Field(default_factory=list)
+    context: dict[str, Any] = Field(default_factory=dict)
+
+
+class ToolRequest(BaseModel):
+    arguments: dict[str, Any] = Field(default_factory=dict)
+
+
+def _service_summary() -> dict[str, Any]:
+    return {
+        "service_id": SERVICE_CONFIG["service_id"],
+        "service_kind": SERVICE_CONFIG["service_kind"],
+        "app_name": SERVICE_CONFIG["app_name"],
+        "namespace": SERVICE_CONFIG["namespace"],
+        "version": SERVICE_CONFIG["version"],
+        "port": SERVICE_CONFIG["port"],
+        "model_id": SERVICE_CONFIG.get("model_id"),
+        "tool_ids": sorted(SERVICE_CONFIG.get("tool_entrypoints", {}).keys()),
+    }
+
+
+async def _run_agent(payload: ChatRequest) -> dict[str, Any]:
+    target = _load_entrypoint(SERVICE_CONFIG["entrypoint"])
+    if inspect.isclass(target):
+        target = target()
+
+    ctx = AgentContext(
+        agent_id=SERVICE_CONFIG["service_id"],
+        input_data={
+            "message": payload.message,
+            "history": payload.history,
+            "context": payload.context,
+        },
+    )
+
+    if hasattr(target, "run"):
+        reply = await _maybe_await(target.run(ctx))
+    elif hasattr(target, "process"):
+        reply = await _maybe_await(target.process(payload.context, payload.message))
+    elif callable(target):
+        reply = await _maybe_await(target(payload.message))
+    else:
+        raise TypeError(
+            f"Agent entrypoint '{SERVICE_CONFIG['entrypoint']}' must expose a class or callable"
+        )
+
+    return {
+        "reply": str(reply),
+        "events": ctx.events,
+        "service": _service_summary(),
+    }
+
+
+def _build_app() -> FastAPI:
+    app = FastAPI(
+        title=f"Sputniq Service - {SERVICE_CONFIG['service_id']}",
+        version=str(SERVICE_CONFIG["version"]),
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    @app.get("/")
+    async def root() -> dict[str, Any]:
+        summary = _service_summary()
+        if SERVICE_CONFIG["service_kind"] == "agent":
+            summary["chat_path"] = "/api/chat"
+        else:
+            summary["run_path"] = "/api/run"
+        return summary
+
+    @app.get("/health")
+    async def health() -> dict[str, Any]:
+        return {"status": "ok", **_service_summary()}
+
+    if SERVICE_CONFIG["service_kind"] == "agent":
+        @app.post("/api/chat")
+        async def chat(payload: ChatRequest) -> dict[str, Any]:
+            try:
+                return await _run_agent(payload)
+            except Exception as exc:
+                raise HTTPException(status_code=500, detail=str(exc)) from exc
+    else:
+        @app.post("/api/run")
+        async def run_tool(payload: ToolRequest) -> dict[str, Any]:
+            try:
+                result = await _invoke_tool(SERVICE_CONFIG["service_id"], payload.arguments)
+                return {"result": result, "service": _service_summary()}
+            except Exception as exc:
+                raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    return app
+
+
+app = _build_app()
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=int(SERVICE_CONFIG["port"]))

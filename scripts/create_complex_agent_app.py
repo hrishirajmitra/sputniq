@@ -9,17 +9,17 @@ def _package_directory(source_dir: Path, zip_path: Path) -> None:
                 archive.write(file_path, file_path.relative_to(source_dir))
 
 
-def create_sample_app() -> None:
+def create_complex_agent_app() -> None:
     base_dir = Path(__file__).resolve().parent.parent
-    source_dir = base_dir / "sample_app"
-    zip_path = base_dir / "sample_app.zip"
+    source_dir = base_dir / "complex_agent_app"
+    zip_path = base_dir / "complex_agent_app.zip"
 
     if not source_dir.exists():
-        raise FileNotFoundError(f"Sample app directory not found: {source_dir}")
+        raise FileNotFoundError(f"Complex agent app directory not found: {source_dir}")
 
     _package_directory(source_dir, zip_path)
-    print(f"Packaged sample app from {source_dir} into {zip_path}")
+    print(f"Packaged complex agent app from {source_dir} into {zip_path}")
 
 
 if __name__ == "__main__":
-    create_sample_app()
+    create_complex_agent_app()

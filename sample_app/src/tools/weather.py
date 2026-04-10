@@ -1,1 +1,6 @@
-def get_weather(location: str):\n    return f'The weather in {location} is sunny.'\n
+def get_weather(location: str):
+    return {
+        "location": location,
+        "forecast": "Sunny with light cloud cover",
+        "temperature_c": 28,
+    }

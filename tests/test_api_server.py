@@ -3,7 +3,9 @@ from fastapi.testclient import TestClient
 import json
 import zipfile
 import io
+from unittest.mock import MagicMock
 
+from sputniq.api import server as server_module
 from sputniq.api.server import app, _workflows, _tools
 
 client = TestClient(app)
@@ -73,7 +75,7 @@ def _create_zip_file(config_data: dict, filename: str = "config.json") -> bytes:
         zip_file.writestr(filename, json.dumps(config_data))
     return zip_buffer.getvalue()
 
-def test_upload_agent_zip_success():
+def test_upload_agent_zip_success(monkeypatch):
     valid_config = {
         "platform": {
             "name": "test-system",
@@ -99,6 +101,11 @@ def test_upload_agent_zip_success():
             }
         ]
     }
+    monkeypatch.setattr(
+        server_module,
+        "deploy_app",
+        lambda config, extract_dir: [{"id": "agent-my", "kind": "agent"}],
+    )
     zip_bytes = _create_zip_file(valid_config)
     res = client.post(
         "/api/v1/registry/upload-zip",
@@ -108,6 +115,7 @@ def test_upload_agent_zip_success():
     data = res.json()
     assert data["status"] == "success"
     assert data["registered_workflows"] == 1
+    assert data["deployed_services"] == 1
     
     # Check if workflow was actually registered
     get_res = client.get("/api/v1/registry/workflows/wf-1")
@@ -157,3 +165,37 @@ def test_upload_agent_zip_bad_file():
     )
     assert res.status_code == 400
     assert "must be a .zip archive" in res.text
+
+
+def test_list_deployments_exposes_chat_metadata(monkeypatch):
+    mock_container = MagicMock()
+    mock_container.short_id = "abc123"
+    mock_container.name = "sputniq-mission-control-agent"
+    mock_container.status = "running"
+    mock_container.labels = {
+        "sputniq.service_id": "mission-control-agent",
+        "sputniq.service_kind": "agent",
+        "sputniq.service_port": "8100",
+        "sputniq.chat_ready": "true",
+        "sputniq.chat_path": "/api/chat",
+        "sputniq.health_path": "/health",
+        "sputniq.app_name": "mission-control-demo",
+        "sputniq.namespace": "demo",
+        "sputniq.version": "1.0.0",
+        "sputniq.workflow_ids": "[\"mission-control-workflow\"]",
+    }
+    mock_container.image.tags = ["demo/mission-control-agent:1.0.0"]
+
+    mock_client = MagicMock()
+    mock_client.containers.list.return_value = [mock_container]
+    monkeypatch.setattr(server_module.docker, "from_env", lambda: mock_client)
+
+    res = client.get("/api/v1/registry/deployments")
+    assert res.status_code == 200
+
+    data = res.json()
+    assert len(data) == 1
+    assert data[0]["service_id"] == "mission-control-agent"
+    assert data[0]["chat_ready"] is True
+    assert data[0]["port"] == 8100
+    assert data[0]["workflow_ids"] == ["mission-control-workflow"]

@@ -48,7 +48,7 @@ class TestGeneratorEngine:
         assert dockerfile.exists()
         content = dockerfile.read_text()
         assert "FROM python:3.11-slim" in content
-        assert "research-agent" in content
+        assert ".sputniq_service_runner.py" in content
 
     def test_service_yaml_generated(self, build_output: dict):
         service_yaml = build_output["out"] / "services" / "research-agent" / "service.yaml"
@@ -59,7 +59,16 @@ class TestGeneratorEngine:
     def test_requirements_txt_generated(self, build_output: dict):
         req = build_output["out"] / "services" / "research-agent" / "requirements.txt"
         assert req.exists()
-        assert "pydantic" in req.read_text()
+        content = req.read_text()
+        assert "pydantic" in content
+        assert "fastapi" in content
+
+    def test_service_runner_generated(self, build_output: dict):
+        runner = build_output["out"] / "services" / "research-agent" / ".sputniq_service_runner.py"
+        assert runner.exists()
+        content = runner.read_text()
+        assert "class ChatRequest" in content
+        assert "CORSMiddleware" in content
 
     def test_tool_schemas_written(self, build_output: dict):
         schemas_path = build_output["out"] / "schemas" / "tool-schemas.json"

@@ -1,1 +1,4 @@
-class WeatherAgent:\n    def process(self, context, message):\n        return f'Fetching weather for: {message}'\n
+class WeatherAgent:
+    def process(self, context, message):
+        location = context.get("location") or message
+        return f"Fetching weather guidance for: {location}"
