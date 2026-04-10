@@ -1,0 +1,9 @@
+{
+  "name": "web-search-tool",
+  "version": "1.0.0",
+  "description": "A nodejs web search tool for Sputniq",
+  "main": "src/tools/search.js",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

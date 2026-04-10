@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -24,6 +24,7 @@ class ToolDefinition(BaseModel):
     """Declarative definition of a callable tool."""
 
     id: str = Field(..., min_length=1, pattern=r"^[a-z0-9][a-z0-9\-]*$")
+    runtime: Literal["python", "node"] = Field(default="python", description="Language runtime environment")
     entrypoint: str = Field(
         ..., min_length=1, description="Module path, e.g. src/tools/search.py:search"
     )

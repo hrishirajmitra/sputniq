@@ -5,9 +5,10 @@ import json
 import docker
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks, Request
+from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
+import httpx
 
 from sputniq.models.workflows import WorkflowDefinition
 from sputniq.models.tools import ToolDefinition
@@ -45,6 +46,21 @@ async def register_tool(tool: ToolDefinition):
     _tools[tool.id] = tool
     return RegistryResponse(status="registered", count=len(_tools))
 
+@app.post("/api/v1/proxy")
+async def proxy_agent_request(req_data: dict):
+    url = req_data.get("url")
+    prompt = req_data.get("prompt")
+    if not url or not prompt:
+        raise HTTPException(status_code=400, detail="url and prompt are required")
+        
+    try:
+        import httpx
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.post(url, json={"prompt": prompt})
+            return JSONResponse(status_code=resp.status_code, content=resp.json())
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Proxy error: {str(e)}")
+
 @app.get("/api/v1/registry/tools", response_model=list[ToolDefinition])
 async def list_tools():
     return list(_tools.values())
@@ -65,12 +81,19 @@ async def list_deployments():
         deployed = []
         for c in containers:
             if c.name.startswith("sputniq-"):
+                port = ""
+                env_vars = c.attrs['Config']['Env']
+                for e in env_vars:
+                    if e.startswith('PORT='):
+                        port = e.split('=')[1]
+                        
                 deployed.append({
                     "id": c.short_id,
                     "name": c.name,
                     "status": c.status,
                     "image": c.image.tags[0] if c.image.tags else "unknown",
-                    "logs_cmd": f"docker logs -f {c.name}"
+                    "logs_cmd": f"docker logs -f {c.name}",
+                    "port": port
                 })
         return deployed
     except Exception as e:
@@ -114,11 +137,25 @@ async def upload_agent_zip(file: UploadFile = File(...)):
                     _tools[tool.id] = tool
             
             # Deploy the app (block until finished)
-            deploy_app(config, tmp_path / "extracted")
+            deployed_ports = deploy_app(config, tmp_path / "extracted")
+                    
+            orchestrator_url = None
+            if deployed_ports:
+                # Find the main agent URL if available
+                for svc, port in deployed_ports.items():
+                    if 'orchestrator' in svc or 'research' in svc:
+                        orchestrator_url = f"http://localhost:{port}/"
+                        break
+                
+                # Fallback to the first available service port if nothing specialized fits
+                if not orchestrator_url:
+                    first_port = next(iter(deployed_ports.values()))
+                    orchestrator_url = f"http://localhost:{first_port}/"
                     
             return {
                 "status": "success", 
                 "message": f"Successfully parsed and deployed items from {file.filename}.",
+                "orchestrator_url": orchestrator_url,
                 "registered_workflows": len(config.workflows) if config.workflows else 0,
                 "registered_tools": len(config.tools) if config.tools else 0
             }
@@ -207,12 +244,18 @@ async def get_ui():
                         let rows = '<tr><th>Container Name</th><th>Status</th><th>Image</th><th>Actions</th><th>Logs</th></tr>';
                         deps.forEach(d => {
                             let actionBtn = '';
-                            if (d.name === 'sputniq-smart-assistant') {
-                                actionBtn = `<button style="background: #10b981; padding: 5px 10px; font-size: 11px; width: auto;" onclick="interact('http://localhost:8001/api/ask', 'Smart Assistant')">Test API</button>`;
-                            } else if (d.name === 'sputniq-orchestrator') {
-                                actionBtn = `<button style="background: #8b5cf6; padding: 5px 10px; font-size: 11px; width: auto;" onclick="interact('http://localhost:8002/api/orchestrate', 'E2E Orchestrator')">Run Orchestration</button>`;
+                            if (d.port) {
+                                if (d.name.includes('smart-assistant')) {
+                                    actionBtn = `<a href="http://localhost:${d.port}/" target="_blank" style="background: #10b981; padding: 5px 10px; font-size: 11px; color: white; text-decoration: none; border-radius: 4px;">Open UI</a>`;
+                                } else if (d.name.includes('orchestrator')) {
+                                    actionBtn = `<a href="http://localhost:${d.port}/" target="_blank" style="background: #8b5cf6; padding: 5px 10px; font-size: 11px; color: white; text-decoration: none; border-radius: 4px;">Open UI</a>`;
+                                } else if (d.name.includes('research-agent')) {
+                                    actionBtn = `<a href="http://localhost:${d.port}/" target="_blank" style="background: #f59e0b; padding: 5px 10px; font-size: 11px; color: white; text-decoration: none; border-radius: 4px;">Open UI (Port ${d.port})</a>`;
+                                } else {
+                                    actionBtn = `<a href="http://localhost:${d.port}/" target="_blank" style="background: #3b82f6; padding: 5px 10px; font-size: 11px; color: white; text-decoration: none; border-radius: 4px;">Open UI (Port ${d.port})</a>`;
+                                }
                             }
-                            rows += `<tr><td><strong>${d.name}</strong></td><td><span class="badge" style="background:${d.status === 'running' ? '#059669' : '#b91c1c'}">${d.status}</span></td><td><code>${d.image}</code></td><td>${actionBtn}</td><td><code>sudo ${d.logs_cmd}</code></td></tr>`;
+                            rows += `<tr><td><strong>${d.name}</strong></td><td><span class="badge" style="background:${d.status === 'running' ? '#059669' : '#b91c1c'}">${d.status}</span></td><td><code>${d.image.split(':')[0]}</code></td><td>${actionBtn}</td><td><code>sudo ${d.logs_cmd}</code></td></tr>`;
                         });
                         depTable.innerHTML = rows;
                     }
@@ -236,10 +279,10 @@ async def get_ui():
                 if (!userPrompt) return;
                 
                 try {
-                    const res = await fetch(url, {
+                    const res = await fetch('/api/v1/proxy', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ prompt: userPrompt })
+                        body: JSON.stringify({ url: url, prompt: userPrompt })
                     });
                     const data = await res.json();
                     alert(`🤖 ${agentName} Reply:\\n\\n` + JSON.stringify(data, null, 2));
@@ -272,7 +315,8 @@ async def get_ui():
                     msgBox.style.display = 'block';
                     if (res.ok) {
                         msgBox.className = 'success';
-                        msgBox.innerText = data.message;
+                        let extraMsg = data.orchestrator_url ? `<br><br><a href="${data.orchestrator_url}" target="_blank" style="background: #10b981; padding: 10px 15px; font-size: 14px; color: white; display: inline-block; text-decoration: none; border-radius: 4px;">🚀 Open Dedicated UI</a>` : '';
+                        msgBox.innerHTML = `<strong>${data.message}</strong>` + extraMsg;
                         fetchData(); // Refresh UI
                     } else {
                         msgBox.className = 'error';

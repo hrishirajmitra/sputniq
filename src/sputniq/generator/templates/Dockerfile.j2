@@ -1,3 +1,4 @@
+{% if runtime_lang == "python" %}
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -11,3 +12,17 @@ ENV PYTHONUNBUFFERED=1
 ENV SERVICE_ID={{ service_id }}
 
 CMD ["python", "-m", "{{ module_path }}"]
+{% elif runtime_lang == "node" %}
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm install
+
+COPY . .
+
+ENV SERVICE_ID={{ service_id }}
+
+CMD ["node", "{{ entrypoint.split(':')[0] }}"]
+{% endif %}

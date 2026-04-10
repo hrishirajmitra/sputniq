@@ -19,11 +19,14 @@ def deploy_app(config, extract_dir: Path):
         builder = ImageBuilder()
         built_tags = []
         
+        import uuid
+        run_id = str(uuid.uuid4())[:8]
+
         # Build agents
         for agent in config.agents:
             service_dir = build_dir / "services" / agent.id
             shutil.copytree(extract_dir, service_dir, dirs_exist_ok=True, ignore=shutil.ignore_patterns(".agentos"))
-            tag = f"{config.platform.namespace}/{agent.id}:{config.platform.version}"
+            tag = f"{config.platform.namespace}/{agent.id}:{config.platform.version}-{run_id}"
             builder.build_service(service_dir, tag)
             built_tags.append((agent.id, tag))
             
@@ -31,14 +34,24 @@ def deploy_app(config, extract_dir: Path):
         for tool in config.tools:
             service_dir = build_dir / "services" / tool.id
             shutil.copytree(extract_dir, service_dir, dirs_exist_ok=True, ignore=shutil.ignore_patterns(".agentos"))
-            tag = f"{config.platform.namespace}/{tool.id}:{config.platform.version}"
+            tag = f"{config.platform.namespace}/{tool.id}:{config.platform.version}-{run_id}"
             builder.build_service(service_dir, tag)
             built_tags.append((tool.id, tag))
             
         # Run containers directly via python docker sdk
         client = builder.client
+        deployed_services = {}
         for service_id, tag in built_tags:
-            container_name = f"sputniq-{service_id}"
+            import socket
+            def get_free_port():
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.bind(('', 0))
+                p = s.getsockname()[1]
+                s.close()
+                return str(p)
+                
+            assigned_port = get_free_port()
+            container_name = f"sputniq-{service_id}-{run_id}"
             
             # Remove old container if it exists
             try:
@@ -61,11 +74,14 @@ def deploy_app(config, extract_dir: Path):
                     network_mode="host",
                     environment={
                         "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
-                        "SPUTNIQ_SERVICE_ID": service_id
+                        "SPUTNIQ_SERVICE_ID": service_id,
+                        "PORT": assigned_port
                     }
                 )
+                deployed_services[service_id] = assigned_port
         
         logger.info("Deployment completed successfully")
+        return deployed_services
     except Exception as e:
         logger.error(f"Deployment failed: {str(e)}", exc_info=True)
 

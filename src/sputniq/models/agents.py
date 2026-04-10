@@ -26,6 +26,7 @@ class AgentDefinition(BaseModel):
 
     id: str = Field(..., min_length=1, pattern=r"^[a-z0-9][a-z0-9\-]*$")
     description: str = ""
+    runtime: Literal["python", "node"] = Field(default="python", description="Language runtime environment")
     entrypoint: str = Field(
         ..., min_length=1, description="Module path, e.g. src/agents/research.py:ResearchAgent"
     )

@@ -164,3 +164,5 @@ def deploy(env: str) -> None:
     console.print(f"[cyan]Deploying bundled manifest to {env}...[/cyan]")
     # Mocking logic calling deployment.py based on config
     console.print(f"[green]✓[/green] Deployed securely. Target orchestration active.\n")
+if __name__ == "__main__":
+    cli()

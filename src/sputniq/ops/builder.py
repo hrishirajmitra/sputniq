@@ -24,7 +24,8 @@ class ImageBuilder:
             image, build_logs = self.client.images.build(
                 path=str(service_dir),
                 tag=tag,
-                rm=True
+                rm=True,
+                nocache=True
             )
             logger.info(f"Successfully built image {tag} (ID: {image.short_id})")
         except BuildError as e:

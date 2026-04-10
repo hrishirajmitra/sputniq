@@ -29,6 +29,7 @@ def _render_service(
     env: Environment,
     service_id: str,
     entrypoint: str,
+    runtime_lang: str,
     config: SputniqConfig,
     service_dir: Path,
 ) -> None:
@@ -37,19 +38,26 @@ def _render_service(
 
     ctx = {
         "service_id": service_id,
+        "entrypoint": entrypoint,
         "module_path": _module_from_entrypoint(entrypoint),
+        "runtime_lang": runtime_lang,
         "namespace": config.platform.namespace,
         "version": config.platform.version,
         "runtime": config.platform.runtime,
         "secrets": config.infrastructure.secrets,
-        "extra_deps": [],
+        "extra_deps": ["fastapi", "uvicorn", "requests"],
     }
 
-    for tmpl_name, out_name in [
+    templates = [
         ("Dockerfile.j2", "Dockerfile"),
         ("service.yaml.j2", "service.yaml"),
-        ("requirements.txt.j2", "requirements.txt"),
-    ]:
+    ]
+    if runtime_lang == "python":
+        templates.append(("requirements.txt.j2", "requirements.txt"))
+    elif runtime_lang == "node":
+        pass # Handle package.json logic if necessary in the future
+
+    for tmpl_name, out_name in templates:
         rendered = env.get_template(tmpl_name).render(ctx)
         (service_dir / out_name).write_text(rendered, "utf-8")
 
@@ -67,11 +75,11 @@ def generate_build_artifacts(config: SputniqConfig, output_dir: Path) -> dict:
     service_ids: list[str] = []
 
     for agent in config.agents:
-        _render_service(env, agent.id, agent.entrypoint, config, services_dir / agent.id)
+        _render_service(env, agent.id, agent.entrypoint, agent.runtime, config, services_dir / agent.id)
         service_ids.append(agent.id)
 
     for tool in config.tools:
-        _render_service(env, tool.id, tool.entrypoint, config, services_dir / tool.id)
+        _render_service(env, tool.id, tool.entrypoint, tool.runtime, config, services_dir / tool.id)
         service_ids.append(tool.id)
 
     # Write tool schemas
