@@ -1,0 +1,65 @@
+{
+  "platform": {
+    "name": "sample-agent-system",
+    "version": "1.0.0",
+    "namespace": "example",
+    "runtime": "docker-compose",
+    "region": "local"
+  },
+  "agents": [
+    {
+      "id": "weather-agent",
+      "description": "Answers questions about the weather.",
+      "entrypoint": "src/agents/weather.py:WeatherAgent",
+      "model": "gpt-mock",
+      "tools": [
+        "get-weather"
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "get-weather",
+      "entrypoint": "src/tools/weather.py:get_weather",
+      "schema": {
+        "input": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "location"
+          ]
+        },
+        "output": {
+          "type": "string"
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "gpt-mock",
+      "provider": "openai",
+      "capabilities": [
+        "chat"
+      ]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "weather-workflow",
+      "description": "Workflow for fetching weather",
+      "entrypoint_step": "step-1",
+      "steps": [
+        {
+          "id": "step-1",
+          "type": "agent",
+          "ref": "weather-agent"
+        }
+      ]
+    }
+  ]
+}

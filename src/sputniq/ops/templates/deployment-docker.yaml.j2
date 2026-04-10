@@ -1,0 +1,9 @@
+services:
+{% for service_id, s in services.items() %}
+  {{ service_id }}:
+    image: {{ platform.namespace }}/{{ service_id }}:{{ platform.version }}
+    container_name: sputniq-{{ service_id }}
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    network_mode: "host"
+{% endfor %}
