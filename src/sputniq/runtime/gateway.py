@@ -1,8 +1,11 @@
 import uuid
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field
 
 from sputniq.runtime.coordinator import WorkflowCoordinator
+from sputniq.api.auth import verify_token, TokenData
+from sputniq.observability.metrics import get_metrics_payload
 
 app = FastAPI(title="Sputniq AgentOS Gateway", version="0.1.0")
 
@@ -22,7 +25,7 @@ coordinators: dict[str, WorkflowCoordinator] = {}
 class GatewayService:
     @staticmethod
     @app.post("/api/v1/execute", response_model=WorkflowExecutionResponse)
-    async def execute_workflow(req: WorkflowExecutionRequest):
+    async def execute_workflow(req: WorkflowExecutionRequest, current_user: TokenData = Depends(verify_token)):
         if req.workflow_id not in coordinators:
             raise HTTPException(status_code=404, detail="Workflow not found")
             
@@ -42,3 +45,8 @@ class GatewayService:
     @app.get("/health")
     async def health_check():
         return {"status": "ok", "version": "0.1.0"}
+
+    @staticmethod
+    @app.get("/metrics", response_class=PlainTextResponse)
+    async def metrics():
+        return get_metrics_payload().decode("utf-8")
