@@ -208,7 +208,9 @@ async def get_ui():
                         deps.forEach(d => {
                             let actionBtn = '';
                             if (d.name === 'sputniq-smart-assistant') {
-                                actionBtn = `<button style="background: #10b981; padding: 5px 10px; font-size: 11px; width: auto;" onclick="interact()">Test API</button>`;
+                                actionBtn = `<button style="background: #10b981; padding: 5px 10px; font-size: 11px; width: auto;" onclick="interact('http://localhost:8001/api/ask', 'Smart Assistant')">Test API</button>`;
+                            } else if (d.name === 'sputniq-orchestrator') {
+                                actionBtn = `<button style="background: #8b5cf6; padding: 5px 10px; font-size: 11px; width: auto;" onclick="interact('http://localhost:8002/api/orchestrate', 'E2E Orchestrator')">Run Orchestration</button>`;
                             }
                             rows += `<tr><td><strong>${d.name}</strong></td><td><span class="badge" style="background:${d.status === 'running' ? '#059669' : '#b91c1c'}">${d.status}</span></td><td><code>${d.image}</code></td><td>${actionBtn}</td><td><code>sudo ${d.logs_cmd}</code></td></tr>`;
                         });
@@ -229,20 +231,20 @@ async def get_ui():
                 }
             }
 
-            async function interact() {
-                const userPrompt = prompt("Ask the Smart Assistant a question (e.g. 'calculate pi' or 'hello'):");
+            async function interact(url, agentName) {
+                const userPrompt = prompt(`Ask the ${agentName} a question (e.g. 'execute a complex task flow'):`);
                 if (!userPrompt) return;
                 
                 try {
-                    const res = await fetch('http://localhost:8001/api/ask', {
+                    const res = await fetch(url, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ prompt: userPrompt })
                     });
                     const data = await res.json();
-                    alert("🤖 Smart Assistant Reply:\\n\\n" + data.reply);
+                    alert(`🤖 ${agentName} Reply:\\n\\n` + JSON.stringify(data, null, 2));
                 } catch (e) {
-                    alert("Could not reach the assistant. Make sure the container is actually running! Error: " + e);
+                    alert(`Could not reach ${agentName}. Make sure the container is actually running! Error: ` + e);
                 }
             }
 
