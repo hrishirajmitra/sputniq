@@ -6,6 +6,13 @@ app.post('/api/tool', (req, res) => {
     const query = req.body.query || "unknown query";
     res.json({ result: `Archit made thingamabob` });
 });
+
+// Also allow GET requests for easier browser testing
+app.get('/api/tool', (req, res) => {
+    const query = req.query.query || "unknown query";
+    res.json({ result: `Archit made thingamabob test via GET` });
+});
+
 app.get('/', (req, res) => {
     res.send(`<h2>Web Search Tool</h2><p>This microservice is running safely on dynamic port ${port}</p>`);
 });

@@ -10,7 +10,7 @@
       "id": "gemini-model",
       "provider": "custom",
       "name": "gemini-2.5-flash",
-      "api_key_env": "",
+      "api_key_env": "AIzaSyCCNNQMQ4GRb3hyh-HfzIaen56smMlAbYM",
       "parameters": {"temperature": 0.7}
     }
   ],

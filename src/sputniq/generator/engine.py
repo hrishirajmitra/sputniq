@@ -62,6 +62,28 @@ def _render_service(
         (service_dir / out_name).write_text(rendered, "utf-8")
 
 
+def _generate_linux_prereqs(output_dir: Path):
+    """Generate vanilla Linux installation scripts."""
+    install_sh = """#!/bin/bash
+set -e
+
+echo "Ensuring Linux Pre-requisites for Sputniq Deployment..."
+
+if [ -x "$(command -v apt-get)" ]; then
+    sudo apt-get update
+    sudo apt-get install -y python3.11 python3.11-venv curl docker.io docker-compose-v2
+elif [ -x "$(command -v yum)" ]; then
+    sudo yum update -y
+    sudo yum install -y python3 curl docker
+    # Amazon Linux / CentOS specifics omitted for brevity
+fi
+
+echo "Pre-requisites installed successfully."
+"""
+    (output_dir / "install.sh").write_text(install_sh, "utf-8")
+    (output_dir / "install.sh").chmod(0o755)
+
+
 def generate_build_artifacts(config: SputniqConfig, output_dir: Path) -> dict:
     """Generate the full .agentos/build/ tree from a validated config.
 
@@ -71,6 +93,8 @@ def generate_build_artifacts(config: SputniqConfig, output_dir: Path) -> dict:
     services_dir = output_dir / "services"
     schemas_dir = output_dir / "schemas"
     schemas_dir.mkdir(parents=True, exist_ok=True)
+    
+    _generate_linux_prereqs(output_dir)
 
     service_ids: list[str] = []
 

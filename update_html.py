@@ -1,203 +1,5 @@
-import shutil
-import tempfile
-import zipfile
-import json
-import docker
-from pathlib import Path
-
-from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks, Request
-from fastapi.responses import HTMLResponse, JSONResponse
-from pydantic import BaseModel, Field
-import httpx
-
-from sputniq.models.workflows import WorkflowDefinition
-from sputniq.models.tools import ToolDefinition
-from sputniq.config.parser import load_config, resolve_references, detect_cycles
-from sputniq.config.errors import ConfigError
-from sputniq.ops.deploy import deploy_app, teardown_app
-
-app = FastAPI(title="Sputniq AgentOS Control API", version="0.1.0")
-
-# Local state to mock registry logic
-_workflows: dict[str, WorkflowDefinition] = {}
-_tools: dict[str, ToolDefinition] = {}
-
-class RegistryResponse(BaseModel):
-    status: str
-    count: int
-
-@app.post("/api/v1/registry/workflows", response_model=RegistryResponse)
-async def register_workflow(workflow: WorkflowDefinition):
-    _workflows[workflow.id] = workflow
-    return RegistryResponse(status="registered", count=len(_workflows))
-
-@app.get("/api/v1/registry/workflows", response_model=list[WorkflowDefinition])
-async def list_workflows():
-    return list(_workflows.values())
-
-@app.get("/api/v1/registry/workflows/{workflow_id}", response_model=WorkflowDefinition)
-async def get_workflow(workflow_id: str):
-    if workflow_id not in _workflows:
-        raise HTTPException(status_code=404, detail="Workflow not found")
-    return _workflows[workflow_id]
-
-@app.post("/api/v1/registry/tools", response_model=RegistryResponse)
-async def register_tool(tool: ToolDefinition):
-    _tools[tool.id] = tool
-    return RegistryResponse(status="registered", count=len(_tools))
-
-@app.post("/api/v1/proxy")
-async def proxy_agent_request(req_data: dict):
-    url = req_data.get("url")
-    prompt = req_data.get("prompt")
-    if not url or not prompt:
-        raise HTTPException(status_code=400, detail="url and prompt are required")
-        
-    try:
-        import httpx
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            resp = await client.post(url, json={"prompt": prompt})
-            return JSONResponse(status_code=resp.status_code, content=resp.json())
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Proxy error: {str(e)}")
-
-@app.get("/api/v1/registry/tools", response_model=list[ToolDefinition])
-async def list_tools():
-    return list(_tools.values())
-
-@app.get("/api/v1/registry/tools/{tool_id}", response_model=ToolDefinition)
-async def get_tool(tool_id: str):
-    if tool_id not in _tools:
-        raise HTTPException(status_code=404, detail="Tool not found")
-    return _tools[tool_id]
-
-@app.get("/api/v1/registry/deployments")
-async def list_deployments():
-    """List actively running Sputniq containers."""
-    try:
-        client = docker.from_env()
-        # Find containers created by us
-        containers = client.containers.list(all=True)
-        deployed = []
-        for c in containers:
-            if c.name.startswith("sputniq-"):
-                port = ""
-                env_vars = c.attrs['Config']['Env']
-                for e in env_vars:
-                    if e.startswith('PORT='):
-                        port = e.split('=')[1]
-                        
-                labels = c.labels
-                run_id = labels.get("sputniq.run_id", "unknown")
-                        
-                deployed.append({
-                    "id": c.short_id,
-                    "name": c.name,
-                    "run_id": run_id,
-                    "status": c.status,
-                    "image": c.image.tags[0] if c.image.tags else "unknown",
-                    "logs_cmd": f"docker logs -f {c.name}",
-                    "port": port
-                })
-        return deployed
-    except Exception as e:
-        return {"error": str(e)}
-
-@app.delete("/api/v1/registry/deployments/{run_id}")
-async def delete_deployment(run_id: str):
-    """Tear down and remove all containers for a specific run_id."""
-    try:
-        removed = teardown_app(run_id)
-        if removed == 0:
-            raise HTTPException(status_code=404, detail=f"No containers found for run_id {run_id}")
-        return {"status": "success", "message": f"Successfully removed {removed} containers for application run {run_id}"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/api/v1/logs/{container_id}")
-async def get_container_logs(container_id: str):
-    """Retrieve tail logs from a container."""
-    try:
-        client = docker.from_env()
-        container = client.containers.get(container_id)
-        logs = container.logs(tail=100, stdout=True, stderr=True)
-        return {"logs": logs.decode('utf-8')}
-    except docker.errors.NotFound:
-        raise HTTPException(status_code=404, detail="Container not found")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/api/v1/registry/upload-zip")
-async def upload_agent_zip(file: UploadFile = File(...)):
-    """Uploads a zip archive containing a config.json. Extracts and parses it."""
-    if not file.filename.endswith('.zip'):
-        raise HTTPException(status_code=400, detail="Uploaded file must be a .zip archive")
-        
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmp_path = Path(tmpdir)
-        upload_path = tmp_path / file.filename
-        
-        with open(upload_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-            
-        try:
-            with zipfile.ZipFile(upload_path, 'r') as zip_ref:
-                zip_ref.extractall(tmp_path / "extracted")
-        except zipfile.BadZipFile:
-            raise HTTPException(status_code=400, detail="Invalid zip archive")
-            
-        config_path = tmp_path / "extracted" / "config.json"
-        if not config_path.exists():
-            raise HTTPException(status_code=400, detail="config.json not found in the root of the archive")
-            
-        try:
-            config = load_config(config_path)
-            resolve_references(config)
-            detect_cycles(config)
-            
-            # Register loaded definitions into the in-memory dictionary
-            if hasattr(config, 'workflows') and config.workflows:
-                for wf in config.workflows:
-                    _workflows[wf.id] = wf
-                    
-            if hasattr(config, 'tools') and config.tools:
-                for tool in config.tools:
-                    _tools[tool.id] = tool
-            
-            # Deploy the app (block until finished)
-            deploy_result = deploy_app(config, tmp_path / "extracted")
-            deployed_ports = deploy_result.get("services", {}) if deploy_result else {}
-            run_id = deploy_result.get("run_id", "unknown") if deploy_result else "unknown"
-                    
-            orchestrator_url = None
-            if deployed_ports:
-                # Find the main agent URL if available
-                for svc, port in deployed_ports.items():
-                    if 'orchestrator' in svc or 'research' in svc:
-                        orchestrator_url = f"http://localhost:{port}/"
-                        break
-                
-                # Fallback to the first available service port if nothing specialized fits
-                if not orchestrator_url:
-                    first_port = next(iter(deployed_ports.values()))
-                    orchestrator_url = f"http://localhost:{first_port}/"
-                    
-            return {
-                "status": "success", 
-                "message": f"Successfully parsed and deployed {file.filename} as Run ID {run_id}.",
-                "run_id": run_id,
-                "orchestrator_url": orchestrator_url,
-                "registered_workflows": len(config.workflows) if config.workflows else 0,
-                "registered_tools": len(config.tools) if config.tools else 0
-            }
-        except ConfigError as e:
-            raise HTTPException(status_code=400, detail=f"Configuration error: {str(e)}")
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
-
-@app.get("/", response_class=HTMLResponse)
-async def get_ui():
-    html_content = """
+import sys
+html_code = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -427,6 +229,19 @@ async def get_ui():
     </script>
 </body>
 </html>
-    """
-    return HTMLResponse(content=html_content)
+"""
 
+import re
+with open("src/sputniq/api/server.py", "r") as f:
+    orig = f.read()
+
+prefix = 'html_content = """'
+start_idx = orig.find(prefix) + len(prefix)
+end_idx = orig.find('"""', start_idx)
+
+new_content = orig[:start_idx] + "\n" + html_code.strip() + "\n    " + orig[end_idx:]
+
+with open("src/sputniq/api/server.py", "w") as f:
+    f.write(new_content)
+
+print("Updated inline HTML.")

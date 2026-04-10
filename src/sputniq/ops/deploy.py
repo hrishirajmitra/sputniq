@@ -38,19 +38,30 @@ def deploy_app(config, extract_dir: Path):
             builder.build_service(service_dir, tag)
             built_tags.append((tool.id, tag))
             
+        # Pre-allocate ports for all services
+        import socket
+        def get_free_port():
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.bind(('', 0))
+            p = s.getsockname()[1]
+            s.close()
+            return str(p)
+            
+        service_ports = {service_id: get_free_port() for service_id, _ in built_tags}
+        
+        # Build the injected environment map
+        service_env = {
+            "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
+        }
+        for sid, port in service_ports.items():
+            env_key = f"{sid.upper().replace('-', '_')}_SERVICE_URL"
+            service_env[env_key] = f"http://localhost:{port}/api/tool"
+            
         # Run containers directly via python docker sdk
         client = builder.client
         deployed_services = {}
         for service_id, tag in built_tags:
-            import socket
-            def get_free_port():
-                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                s.bind(('', 0))
-                p = s.getsockname()[1]
-                s.close()
-                return str(p)
-                
-            assigned_port = get_free_port()
+            assigned_port = service_ports[service_id]
             container_name = f"sputniq-{service_id}-{run_id}"
             
             # Remove old container if it exists
@@ -67,21 +78,40 @@ def deploy_app(config, extract_dir: Path):
             
             if runtime in ("docker", "docker-compose"):
                 # Easiest way is host networking so it can reach the local kafka at :9092 natively
+                container_env = service_env.copy()
+                container_env.update({
+                    "SPUTNIQ_SERVICE_ID": service_id,
+                    "PORT": assigned_port
+                })
+                
                 client.containers.run(
                     image=tag,
                     name=container_name,
                     detach=True,
                     network_mode="host",
-                    environment={
-                        "KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
-                        "SPUTNIQ_SERVICE_ID": service_id,
-                        "PORT": assigned_port
-                    }
+                    environment=container_env,
+                    labels={"sputniq.run_id": run_id, "sputniq.service_id": service_id}
                 )
                 deployed_services[service_id] = assigned_port
         
-        logger.info("Deployment completed successfully")
-        return deployed_services
+        logger.info(f"Deployment {run_id} completed successfully")
+        return {"run_id": run_id, "services": deployed_services}
     except Exception as e:
         logger.error(f"Deployment failed: {str(e)}", exc_info=True)
+
+
+def teardown_app(run_id: str) -> int:
+    """Tear down all containers and networks associated with a specific run_id."""
+    try:
+        client = docker.from_env()
+        containers = client.containers.list(all=True, filters={"label": f"sputniq.run_id={run_id}"})
+        removed_count = 0
+        for c in containers:
+            logger.info(f"Removing container {c.name} for run_id {run_id}")
+            c.remove(force=True)
+            removed_count += 1
+        return removed_count
+    except Exception as e:
+        logger.error(f"Teardown failed: {str(e)}", exc_info=True)
+        raise
 
