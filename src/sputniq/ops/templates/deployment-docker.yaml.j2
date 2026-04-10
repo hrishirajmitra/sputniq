@@ -3,7 +3,14 @@ services:
   {{ service_id }}:
     image: {{ platform.namespace }}/{{ service_id }}:{{ platform.version }}
     container_name: sputniq-{{ service_id }}
+    restart: unless-stopped
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-    network_mode: "host"
+      - SPUTNIQ_RUNTIME={{ platform.runtime }}
+    networks:
+      - sputniq_runtime
 {% endfor %}
+
+networks:
+  sputniq_runtime:
+    driver: bridge

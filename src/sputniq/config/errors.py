@@ -19,3 +19,8 @@ class CyclicDependencyError(ConfigError):
 class ValidationError(ConfigError):
     """Raised when the configuration content is invalid."""
     pass
+
+
+class BuildValidationError(ValidationError):
+    """Raised when build-time code analysis fails."""
+    pass

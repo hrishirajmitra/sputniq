@@ -59,6 +59,22 @@ function appendMessage(serviceId, message) {
   renderTranscript();
 }
 
+async function copyTextToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (_error) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  }
+}
+
 function renderDeployments() {
   const tbody = el("deploymentTable").querySelector("tbody");
   const deployments = state.deployments;
@@ -72,9 +88,12 @@ function renderDeployments() {
 
   tbody.innerHTML = deployments.map((deployment) => {
     const status = deployment.status || "unknown";
+    const role = deployment.service_role || deployment.service_kind || "-";
+    const runtimeLabel = `${role} / ${deployment.plane || "unknown"}`;
     const selectButton = deployment.chat_ready
-      ? `<button type="button" data-chat-target="${deployment.service_id}" class="ghost">Use in Chat</button>`
-      : `<span class="label">No chat</span>`;
+      ? `<button type="button" data-chat-target="${deployment.service_id}" class="btn secondary sm">Use in Chat</button>`
+      : `<span class="muted">Internal</span>`;
+    const logAction = `<button type="button" data-copy-logs="${escapeHtml(deployment.logs_cmd)}" class="btn tertiary sm">Copy Logs</button>`;
 
     return `
       <tr>
@@ -82,12 +101,12 @@ function renderDeployments() {
           <strong>${escapeHtml(deployment.service_id)}</strong><br>
           <code>${escapeHtml(deployment.image || "unknown")}</code>
         </td>
-        <td><span class="status-pill ${status}"><span class="status-dot"></span>${escapeHtml(status)}</span></td>
-        <td>${escapeHtml(deployment.service_kind || "-")}</td>
+        <td><span class="status-pill ${status}"><span class="dot"></span>${escapeHtml(status)}</span></td>
+        <td>${escapeHtml(runtimeLabel)}</td>
         <td>${escapeHtml(deployment.app_name || "-")}</td>
         <td>${deployment.port ? `<code>${deployment.port}</code>` : "-"}</td>
         <td>${selectButton}</td>
-        <td><code>${escapeHtml(deployment.logs_cmd)}</code></td>
+        <td>${logAction}</td>
       </tr>
     `;
   }).join("");
@@ -97,6 +116,20 @@ function renderDeployments() {
       state.selectedServiceId = button.getAttribute("data-chat-target");
       renderChatTargets();
       renderTranscript();
+    });
+  });
+
+  tbody.querySelectorAll("[data-copy-logs]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const command = button.getAttribute("data-copy-logs") || "";
+      if (!command) {
+        return;
+      }
+      await copyTextToClipboard(command);
+      button.textContent = "Copied";
+      window.setTimeout(() => {
+        button.textContent = "Copy Logs";
+      }, 900);
     });
   });
 }
@@ -143,10 +176,10 @@ function renderChatTargets() {
   el("chatTargetCount").textContent = targets.length;
 
   if (!targets.length) {
-    select.innerHTML = `<option value="">No running agent services</option>`;
+    select.innerHTML = `<option value="">No running gateways</option>`;
     state.selectedServiceId = "";
     el("chatStatusBadge").textContent = "No target";
-    el("chatMeta").textContent = "Deploy an agent bundle to unlock the in-platform chatbox.";
+    el("chatMeta").textContent = "Deploy an application bundle to unlock the gateway chatbox.";
     el("chatUrlLabel").textContent = "";
     return;
   }
@@ -156,7 +189,7 @@ function renderChatTargets() {
   }
 
   select.innerHTML = targets.map((deployment) => `
-    <option value="${deployment.service_id}">${deployment.service_id} | ${deployment.app_name || "app"} | port ${deployment.port}</option>
+    <option value="${deployment.service_id}">${deployment.app_name || "app"} | ${deployment.logical_id || deployment.service_role || deployment.service_id} | port ${deployment.port}</option>
   `).join("");
   select.value = state.selectedServiceId;
 
@@ -165,7 +198,7 @@ function renderChatTargets() {
     return;
   }
 
-  el("chatStatusBadge").textContent = `${deployment.service_id} ready`;
+  el("chatStatusBadge").textContent = `${deployment.logical_id || deployment.service_role || deployment.service_id} ready`;
   el("chatMeta").textContent = `${deployment.app_name} | ${deployment.image}`;
   el("chatUrlLabel").textContent = serviceUrl(deployment, deployment.chat_path || "");
 }
@@ -175,13 +208,13 @@ function renderTranscript() {
   const deployment = selectedDeployment();
 
   if (!deployment) {
-    container.innerHTML = `<div class="empty-state">Pick a running agent target to start a transcript.</div>`;
+    container.innerHTML = `<div class="empty-state">Pick a running gateway target to start a transcript.</div>`;
     return;
   }
 
   const messages = ensureSession(deployment.service_id);
   if (!messages.length) {
-    container.innerHTML = `<div class="empty-state">The transcript for <strong>${escapeHtml(deployment.service_id)}</strong> is empty. Send a message to verify the deployed agent.</div>`;
+    container.innerHTML = `<div class="empty-state">The transcript for <strong>${escapeHtml(deployment.app_name || deployment.service_id)}</strong> is empty. Send a message to exercise the full runtime path.</div>`;
     return;
   }
 

@@ -1,5 +1,7 @@
 import json
 import logging
+from datetime import UTC, datetime
+import hashlib
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -37,13 +39,20 @@ class ArtifactManifest:
         
     def save(self):
         manifest_path = self.target_dir / "build.manifest.json"
+        manifest_blob = json.dumps(
+            {"services": self.services, "security_scans": self.scans},
+            sort_keys=True,
+        ).encode("utf-8")
         
         payload = {
+            "bundle_id": f"b-{hashlib.sha256(manifest_blob).hexdigest()[:12]}",
             "version": "1.0",
+            "built_at": datetime.now(UTC).isoformat(),
+            "config_hash": f"sha256:{hashlib.sha256(manifest_blob).hexdigest()}",
             "services": self.services,
-            "security_scans": self.scans
+            "security_scans": self.scans,
+            "signature": "unsigned-local-build",
         }
         
         manifest_path.write_text(json.dumps(payload, indent=2))
         logger.info(f"Manifest written to {manifest_path}")
-

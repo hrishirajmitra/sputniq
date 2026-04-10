@@ -43,6 +43,12 @@ class TestGeneratorEngine:
         out = build_output["out"]
         assert (out / "services" / "web-search").is_dir()
 
+    def test_platform_service_dirs_created(self, build_output: dict):
+        out = build_output["out"]
+        assert (out / "services" / "agentos-test-gateway").is_dir()
+        assert (out / "services" / "agentos-test-workflow-coordinator").is_dir()
+        assert (out / "services" / "agentos-test-tool-dispatcher").is_dir()
+
     def test_dockerfile_generated(self, build_output: dict):
         dockerfile = build_output["out"] / "services" / "research-agent" / "Dockerfile"
         assert dockerfile.exists()
@@ -70,8 +76,22 @@ class TestGeneratorEngine:
         assert "class ChatRequest" in content
         assert "CORSMiddleware" in content
 
+    def test_platform_runner_generated(self, build_output: dict):
+        runner = build_output["out"] / "services" / "agentos-test-gateway" / ".sputniq_platform_runner.py"
+        assert runner.exists()
+        content = runner.read_text()
+        assert "SERVICE_ROLE" in content
+        assert "workflow-coordinator" in content
+
     def test_tool_schemas_written(self, build_output: dict):
         schemas_path = build_output["out"] / "schemas" / "tool-schemas.json"
         assert schemas_path.exists()
         schemas = json.loads(schemas_path.read_text())
         assert "web-search" in schemas
+
+    def test_message_schemas_written(self, build_output: dict):
+        schemas_path = build_output["out"] / "schemas" / "message-schemas.json"
+        assert schemas_path.exists()
+        schemas = json.loads(schemas_path.read_text())
+        assert "AgentInput" in schemas
+        assert "WorkflowComplete" in schemas

@@ -51,7 +51,7 @@
         {
             "id": "gpt-4o",
             "provider": "openai",
-            "capabilities": ["chat"],
+            "capabilities": ["chat", "function-calling"],
             "config": {}
         }
     ],

@@ -40,14 +40,15 @@
     }
   ],
   "models": [
-    {
-      "id": "gpt-mock",
-      "provider": "openai",
-      "capabilities": [
-        "chat"
-      ]
-    }
-  ],
+        {
+            "id": "gpt-mock",
+            "provider": "openai",
+            "capabilities": [
+                "chat",
+                "function-calling"
+            ]
+        }
+    ],
   "workflows": [
     {
       "id": "weather-workflow",

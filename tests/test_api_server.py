@@ -14,9 +14,23 @@ client = TestClient(app)
 def _clear_registries():
     _workflows.clear()
     _tools.clear()
+    server_module._agents.clear()
+    server_module._models.clear()
+    server_module._workflow_apps.clear()
+    server_module._tool_apps.clear()
+    server_module._model_apps.clear()
+    server_module._agent_sessions.clear()
+    server_module._executions.clear()
     yield
     _workflows.clear()
     _tools.clear()
+    server_module._agents.clear()
+    server_module._models.clear()
+    server_module._workflow_apps.clear()
+    server_module._tool_apps.clear()
+    server_module._model_apps.clear()
+    server_module._agent_sessions.clear()
+    server_module._executions.clear()
 
 def test_register_and_get_workflow():
     wf_payload = {
@@ -69,10 +83,16 @@ def test_get_tool_not_found():
     res = client.get("/api/v1/registry/tools/non-existent")
     assert res.status_code == 404
 
-def _create_zip_file(config_data: dict, filename: str = "config.json") -> bytes:
+def _create_zip_file(
+    config_data: dict,
+    filename: str = "config.json",
+    extra_files: dict[str, str] | None = None,
+) -> bytes:
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
         zip_file.writestr(filename, json.dumps(config_data))
+        for path, content in (extra_files or {}).items():
+            zip_file.writestr(path, content)
     return zip_buffer.getvalue()
 
 def test_upload_agent_zip_success(monkeypatch):
@@ -88,10 +108,10 @@ def test_upload_agent_zip_success(monkeypatch):
             {
                 "id": "agent-my",
                 "description": "A test agent",
-                "entrypoint": "test:test", "model": "gpt-4"
+                "entrypoint": "test.py:test", "model": "gpt-4"
             }
         ],
-        "models": [{"id": "gpt-4", "provider": "openai"}], "workflows": [
+        "models": [{"id": "gpt-4", "provider": "openai", "capabilities": ["chat", "function-calling"]}], "workflows": [
             {
                 "id": "wf-1",
                 "entrypoint_step": "step-1",
@@ -101,12 +121,15 @@ def test_upload_agent_zip_success(monkeypatch):
             }
         ]
     }
+    extra_files = {
+        "test.py": "class test:\n    async def run(self, ctx):\n        return 'ok'\n",
+    }
     monkeypatch.setattr(
         server_module,
         "deploy_app",
         lambda config, extract_dir: [{"id": "agent-my", "kind": "agent"}],
     )
-    zip_bytes = _create_zip_file(valid_config)
+    zip_bytes = _create_zip_file(valid_config, extra_files=extra_files)
     res = client.post(
         "/api/v1/registry/upload-zip",
         files={"file": ("test_app.zip", zip_bytes, "application/zip")}
@@ -174,7 +197,9 @@ def test_list_deployments_exposes_chat_metadata(monkeypatch):
     mock_container.status = "running"
     mock_container.labels = {
         "sputniq.service_id": "mission-control-agent",
+        "sputniq.logical_id": "gateway",
         "sputniq.service_kind": "agent",
+        "sputniq.service_role": "gateway",
         "sputniq.service_port": "8100",
         "sputniq.chat_ready": "true",
         "sputniq.chat_path": "/api/chat",
@@ -196,6 +221,8 @@ def test_list_deployments_exposes_chat_metadata(monkeypatch):
     data = res.json()
     assert len(data) == 1
     assert data[0]["service_id"] == "mission-control-agent"
+    assert data[0]["logical_id"] == "gateway"
+    assert data[0]["service_role"] == "gateway"
     assert data[0]["chat_ready"] is True
     assert data[0]["port"] == 8100
     assert data[0]["workflow_ids"] == ["mission-control-workflow"]

@@ -1,0 +1,540 @@
+import json
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any
+from uuid import uuid4
+
+import httpx
+import uvicorn
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import PlainTextResponse
+from prometheus_client import Counter, Histogram, generate_latest
+from pydantic import BaseModel, Field
+
+APP_ROOT = Path(__file__).resolve().parent
+CONFIG_PATH = APP_ROOT / ".sputniq_service.json"
+REQUEST_COUNTER = Counter(
+    "sputniq_platform_requests_total",
+    "Number of requests handled by the generated platform runtime",
+    ["service_id", "route"],
+)
+REQUEST_LATENCY = Histogram(
+    "sputniq_platform_request_seconds",
+    "Latency for platform runtime requests",
+    ["service_id", "route"],
+)
+
+
+def _load_service_config() -> dict[str, Any]:
+    return json.loads(CONFIG_PATH.read_text("utf-8"))
+
+
+SERVICE_CONFIG = _load_service_config()
+SERVICE_ROLE = SERVICE_CONFIG["service_role"]
+APP_SERVICE_URLS = SERVICE_CONFIG.get("app_service_urls", {})
+PLATFORM_URLS = SERVICE_CONFIG.get("platform_urls", {})
+WORKFLOWS = {workflow["id"]: workflow for workflow in SERVICE_CONFIG.get("workflows", [])}
+TOOL_SCHEMAS = SERVICE_CONFIG.get("tool_schemas", {})
+MESSAGE_SCHEMAS = SERVICE_CONFIG.get("message_schemas", {})
+MODEL_DEFS = {model["id"]: model for model in SERVICE_CONFIG.get("models", [])}
+TOOL_DEFS = {tool["id"]: tool for tool in SERVICE_CONFIG.get("tools", [])}
+
+_EXECUTIONS: dict[str, dict[str, Any]] = {}
+_SESSIONS: dict[str, list[dict[str, Any]]] = {}
+_TOOL_INVOCATIONS: dict[str, list[dict[str, Any]]] = {}
+_MODEL_USAGE: dict[str, dict[str, Any]] = {}
+
+
+class ChatRequest(BaseModel):
+    message: str = Field(..., min_length=1)
+    workflow_id: str | None = None
+    history: list[dict[str, Any]] = Field(default_factory=list)
+    context: dict[str, Any] = Field(default_factory=dict)
+
+
+class ExecutionRequest(BaseModel):
+    workflow_id: str
+    input_data: dict[str, Any] = Field(default_factory=dict)
+    session_id: str | None = None
+    correlation_id: str | None = None
+
+
+class ToolInvokeRequest(BaseModel):
+    arguments: dict[str, Any] = Field(default_factory=dict)
+
+
+class ModelInvokeRequest(BaseModel):
+    messages: list[dict[str, str]] = Field(default_factory=list)
+    parameters: dict[str, Any] = Field(default_factory=dict)
+
+
+def _service_summary() -> dict[str, Any]:
+    return {
+        "service_id": SERVICE_CONFIG["service_id"],
+        "logical_id": SERVICE_CONFIG["logical_id"],
+        "service_kind": SERVICE_CONFIG["service_kind"],
+        "service_role": SERVICE_CONFIG["service_role"],
+        "app_name": SERVICE_CONFIG["app_name"],
+        "namespace": SERVICE_CONFIG["namespace"],
+        "version": SERVICE_CONFIG["version"],
+        "port": SERVICE_CONFIG["port"],
+    }
+
+
+async def _post_json(url: str, payload: dict[str, Any]) -> dict[str, Any]:
+    async with httpx.AsyncClient(timeout=45.0) as client:
+        response = await client.post(url, json=payload)
+        response.raise_for_status()
+        return response.json()
+
+
+def _workflow_predecessors(workflow: dict[str, Any]) -> dict[str, set[str]]:
+    predecessors = {step["id"]: set() for step in workflow["steps"]}
+    for step in workflow["steps"]:
+        for next_id in step.get("next", []):
+            predecessors.setdefault(next_id, set()).add(step["id"])
+    return predecessors
+
+
+def _schema_properties(schema: dict[str, Any]) -> dict[str, Any]:
+    input_schema = schema.get("input", {})
+    if isinstance(input_schema, dict) and input_schema.get("type") == "object":
+        return input_schema.get("properties", {})
+    if isinstance(input_schema, dict):
+        return {
+            key: value
+            for key, value in input_schema.items()
+            if isinstance(value, dict)
+        }
+    return {}
+
+
+def _schema_required(schema: dict[str, Any]) -> set[str]:
+    input_schema = schema.get("input", {})
+    if isinstance(input_schema, dict) and input_schema.get("type") == "object":
+        return set(input_schema.get("required", []))
+    if isinstance(input_schema, dict):
+        return {
+            key
+            for key, value in input_schema.items()
+            if isinstance(value, dict) and value.get("required") is True
+        }
+    return set()
+
+
+def _matches_type(value: Any, schema_type: str) -> bool:
+    if schema_type == "string":
+        return isinstance(value, str)
+    if schema_type == "number":
+        return isinstance(value, (int, float)) and not isinstance(value, bool)
+    if schema_type == "integer":
+        return isinstance(value, int) and not isinstance(value, bool)
+    if schema_type == "boolean":
+        return isinstance(value, bool)
+    if schema_type == "object":
+        return isinstance(value, dict)
+    if schema_type == "array":
+        return isinstance(value, list)
+    if schema_type == "null":
+        return value is None
+    return True
+
+
+def _validate_tool_arguments(tool_id: str, arguments: dict[str, Any]) -> None:
+    schema = TOOL_SCHEMAS.get(tool_id, {})
+    properties = _schema_properties(schema)
+    required = _schema_required(schema)
+
+    missing = [key for key in required if key not in arguments]
+    if missing:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Tool '{tool_id}' missing required arguments: {', '.join(sorted(missing))}",
+        )
+
+    for key, value in arguments.items():
+        prop = properties.get(key)
+        if not isinstance(prop, dict):
+            continue
+        expected = prop.get("type")
+        if isinstance(expected, str) and not _matches_type(value, expected):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Tool '{tool_id}' argument '{key}' must be of type '{expected}'",
+            )
+
+
+def _task_names_from_result(step_results: dict[str, Any]) -> list[str]:
+    for payload in step_results.values():
+        result = payload.get("result")
+        if not isinstance(result, dict):
+            continue
+        phases = result.get("phases")
+        if not isinstance(phases, list):
+            continue
+        tasks: list[str] = []
+        for phase in phases:
+            for task in phase.get("tasks", []):
+                if isinstance(task, dict) and "name" in task:
+                    tasks.append(task["name"])
+        if tasks:
+            return tasks
+    return []
+
+
+def _phases_from_result(step_results: dict[str, Any]) -> list[dict[str, Any]]:
+    for payload in step_results.values():
+        result = payload.get("result")
+        if isinstance(result, dict) and isinstance(result.get("phases"), list):
+            return result["phases"]
+    return []
+
+
+def _tool_arguments(tool_id: str, step: dict[str, Any], state: dict[str, Any]) -> dict[str, Any]:
+    arguments = dict(step.get("inputs", {}))
+    properties = _schema_properties(TOOL_SCHEMAS.get(tool_id, {}))
+    context = state["context"]
+
+    for key in properties:
+        if key in arguments:
+            continue
+        if key in context:
+            arguments[key] = context[key]
+        elif key == "query":
+            arguments[key] = state["message"]
+        elif key == "goal":
+            arguments[key] = state["message"]
+        elif key == "location":
+            arguments[key] = state["message"]
+        elif key == "tasks":
+            arguments[key] = context.get("tasks") or _task_names_from_result(state["step_results"])
+        elif key == "phases":
+            arguments[key] = context.get("phases") or _phases_from_result(state["step_results"])
+
+    return arguments
+
+
+def _update_context_from_payload(state: dict[str, Any], payload: dict[str, Any]) -> None:
+    result = payload.get("result")
+    if isinstance(result, dict):
+        if "phases" in result:
+            state["context"]["phases"] = result["phases"]
+            state["context"]["tasks"] = _task_names_from_result({"latest": payload})
+        if "risks" in result:
+            state["context"]["risks"] = result["risks"]
+        if "forecast" in result:
+            state["context"]["forecast"] = result["forecast"]
+    if "reply" in payload:
+        state["context"]["last_reply"] = payload["reply"]
+
+
+async def _execute_workflow(request: ExecutionRequest) -> dict[str, Any]:
+    workflow = WORKFLOWS.get(request.workflow_id)
+    if workflow is None:
+        raise HTTPException(status_code=404, detail=f"Workflow '{request.workflow_id}' not found")
+
+    session_id = request.session_id or str(uuid4())
+    correlation_id = request.correlation_id or str(uuid4())
+    steps = {step["id"]: step for step in workflow["steps"]}
+    predecessors = _workflow_predecessors(workflow)
+
+    state = {
+        "message": request.input_data.get("message", ""),
+        "history": request.input_data.get("history", []),
+        "context": dict(request.input_data.get("context", {})),
+        "step_results": {},
+        "executed_steps": [],
+        "session_id": session_id,
+        "correlation_id": correlation_id,
+    }
+
+    queue = [workflow["entrypoint_step"]]
+    queued = {workflow["entrypoint_step"]}
+
+    while queue:
+        step_id = queue.pop(0)
+        step = steps[step_id]
+        payload: dict[str, Any]
+
+        if step["type"] == "agent":
+            service_url = APP_SERVICE_URLS.get(step["ref"])
+            if not service_url:
+                raise HTTPException(status_code=500, detail=f"Agent service '{step['ref']}' is unavailable")
+            payload = await _post_json(
+                f"{service_url}/api/chat",
+                {
+                    "message": state["message"],
+                    "history": state["history"],
+                    "context": state["context"],
+                    "session_id": session_id,
+                    "correlation_id": correlation_id,
+                },
+            )
+            if payload.get("reply"):
+                state["history"] = state["history"] + [{"role": "assistant", "content": payload["reply"]}]
+        elif step["type"] == "tool":
+            dispatcher_url = PLATFORM_URLS.get("tool-dispatcher")
+            if not dispatcher_url:
+                raise HTTPException(status_code=500, detail="Tool dispatcher is unavailable")
+            payload = await _post_json(
+                f"{dispatcher_url}/api/v1/tools/{step['ref']}/invoke",
+                {"arguments": _tool_arguments(step["ref"], step, state)},
+            )
+        elif step["type"] == "model":
+            proxy_url = PLATFORM_URLS.get("model-proxy")
+            if not proxy_url:
+                raise HTTPException(status_code=500, detail="Model proxy is unavailable")
+            payload = await _post_json(
+                f"{proxy_url}/api/v1/models/{step['ref']}/invoke",
+                {"messages": [{"role": "user", "content": state["message"]}], "parameters": {}},
+            )
+        elif step["type"] == "parallel":
+            payload = {
+                "result": {"status": "parallel-fanout", "branches": step.get("next", [])},
+                "service": _service_summary(),
+            }
+        elif step["type"] == "branch":
+            selected = step.get("next", [])[:1]
+            payload = {
+                "result": {"status": "branch", "selected": selected},
+                "service": _service_summary(),
+            }
+        else:
+            payload = {"result": {"status": "noop", "type": step["type"]}, "service": _service_summary()}
+
+        state["step_results"][step_id] = payload
+        state["executed_steps"].append(step_id)
+        _update_context_from_payload(state, payload)
+
+        next_candidates = step.get("next", [])
+        if step["type"] == "branch":
+            next_candidates = next_candidates[:1]
+
+        for next_id in next_candidates:
+            if next_id in queued or next_id in state["executed_steps"]:
+                continue
+            if predecessors.get(next_id, set()).issubset(set(state["executed_steps"])):
+                queue.append(next_id)
+                queued.add(next_id)
+
+    execution_id = str(uuid4())
+    final_step_id = state["executed_steps"][-1]
+    final_payload = state["step_results"][final_step_id]
+    execution = {
+        "execution_id": execution_id,
+        "workflow_id": request.workflow_id,
+        "session_id": session_id,
+        "correlation_id": correlation_id,
+        "status": "completed",
+        "result": final_payload,
+        "step_results": state["step_results"],
+        "executed_steps": state["executed_steps"],
+        "started_at": datetime.now(UTC).isoformat(),
+    }
+    _EXECUTIONS[execution_id] = execution
+    _SESSIONS.setdefault(request.workflow_id, []).append(
+        {
+            "session_id": session_id,
+            "correlation_id": correlation_id,
+            "last_execution_id": execution_id,
+            "last_reply": final_payload.get("reply"),
+        }
+    )
+    return execution
+
+
+def _build_app() -> FastAPI:
+    app = FastAPI(
+        title=f"Sputniq Platform Runtime - {SERVICE_CONFIG['logical_id']}",
+        version=str(SERVICE_CONFIG["version"]),
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    @app.get("/")
+    async def root() -> dict[str, Any]:
+        summary = _service_summary()
+        summary["platform_urls"] = PLATFORM_URLS
+        if SERVICE_ROLE == "gateway":
+            summary["chat_path"] = "/api/chat"
+        return summary
+
+    @app.get("/health")
+    async def health() -> dict[str, Any]:
+        return {"status": "ok", **_service_summary()}
+
+    @app.get("/metrics", response_class=PlainTextResponse)
+    async def metrics() -> str:
+        return generate_latest().decode("utf-8")
+
+    if SERVICE_ROLE == "gateway":
+        @app.get("/api/v1/workflows")
+        async def list_workflows() -> list[dict[str, Any]]:
+            return list(WORKFLOWS.values())
+
+        @app.post("/api/chat")
+        async def chat(payload: ChatRequest) -> dict[str, Any]:
+            REQUEST_COUNTER.labels(SERVICE_CONFIG["service_id"], "/api/chat").inc()
+            with REQUEST_LATENCY.labels(SERVICE_CONFIG["service_id"], "/api/chat").time():
+                workflow_id = payload.workflow_id or SERVICE_CONFIG.get("default_workflow_id")
+                if not workflow_id:
+                    raise HTTPException(status_code=400, detail="No workflow is available for this app")
+                coordinator_url = PLATFORM_URLS.get("workflow-coordinator")
+                if not coordinator_url:
+                    raise HTTPException(status_code=500, detail="Workflow coordinator is unavailable")
+                execution = await _post_json(
+                    f"{coordinator_url}/api/v1/workflows/{workflow_id}/execute",
+                    {
+                        "workflow_id": workflow_id,
+                        "input_data": {
+                            "message": payload.message,
+                            "history": payload.history,
+                            "context": payload.context,
+                        },
+                        "session_id": str(uuid4()),
+                        "correlation_id": str(uuid4()),
+                    },
+                )
+                result = execution["result"]
+                reply = result.get("reply")
+                if reply is None:
+                    reply = json.dumps(result.get("result", result), indent=2)
+                return {
+                    "reply": reply,
+                    "execution_id": execution["execution_id"],
+                    "workflow_id": workflow_id,
+                    "events": result.get("events", []),
+                    "service": _service_summary(),
+                }
+
+        @app.post("/api/v1/execute")
+        async def execute(req: ExecutionRequest) -> dict[str, Any]:
+            REQUEST_COUNTER.labels(SERVICE_CONFIG["service_id"], "/api/v1/execute").inc()
+            with REQUEST_LATENCY.labels(SERVICE_CONFIG["service_id"], "/api/v1/execute").time():
+                coordinator_url = PLATFORM_URLS.get("workflow-coordinator")
+                if not coordinator_url:
+                    raise HTTPException(status_code=500, detail="Workflow coordinator is unavailable")
+                return await _post_json(
+                    f"{coordinator_url}/api/v1/workflows/{req.workflow_id}/execute",
+                    req.model_dump(),
+                )
+
+    elif SERVICE_ROLE == "workflow-coordinator":
+        @app.get("/api/v1/workflows")
+        async def list_workflows() -> list[dict[str, Any]]:
+            return list(WORKFLOWS.values())
+
+        @app.post("/api/v1/workflows/{workflow_id}/execute")
+        async def execute(workflow_id: str, req: ExecutionRequest) -> dict[str, Any]:
+            REQUEST_COUNTER.labels(SERVICE_CONFIG["service_id"], "/api/v1/workflows/execute").inc()
+            with REQUEST_LATENCY.labels(SERVICE_CONFIG["service_id"], "/api/v1/workflows/execute").time():
+                req.workflow_id = workflow_id
+                return await _execute_workflow(req)
+
+        @app.get("/api/v1/executions/{execution_id}")
+        async def get_execution(execution_id: str) -> dict[str, Any]:
+            if execution_id not in _EXECUTIONS:
+                raise HTTPException(status_code=404, detail="Execution not found")
+            return _EXECUTIONS[execution_id]
+
+    elif SERVICE_ROLE == "tool-dispatcher":
+        @app.get("/api/v1/tools")
+        async def list_tools() -> list[dict[str, Any]]:
+            return list(TOOL_DEFS.values())
+
+        @app.post("/api/v1/tools/{tool_id}/invoke")
+        async def invoke_tool(tool_id: str, payload: ToolInvokeRequest) -> dict[str, Any]:
+            REQUEST_COUNTER.labels(SERVICE_CONFIG["service_id"], "/api/v1/tools/invoke").inc()
+            with REQUEST_LATENCY.labels(SERVICE_CONFIG["service_id"], "/api/v1/tools/invoke").time():
+                if tool_id not in TOOL_DEFS:
+                    raise HTTPException(status_code=404, detail=f"Tool '{tool_id}' not found")
+                _validate_tool_arguments(tool_id, payload.arguments)
+                tool_url = APP_SERVICE_URLS.get(tool_id)
+                if not tool_url:
+                    raise HTTPException(status_code=500, detail=f"Tool service '{tool_id}' is unavailable")
+                result = await _post_json(f"{tool_url}/api/run", payload.model_dump())
+                invocation = {
+                    "tool_id": tool_id,
+                    "arguments": payload.arguments,
+                    "recorded_at": datetime.now(UTC).isoformat(),
+                    "result": result.get("result"),
+                }
+                _TOOL_INVOCATIONS.setdefault(tool_id, []).append(invocation)
+                return result
+
+        @app.get("/api/v1/tools/{tool_id}/invocations")
+        async def get_invocations(tool_id: str) -> list[dict[str, Any]]:
+            return _TOOL_INVOCATIONS.get(tool_id, [])
+
+    elif SERVICE_ROLE == "model-proxy":
+        @app.get("/api/v1/models")
+        async def list_models() -> list[dict[str, Any]]:
+            return list(MODEL_DEFS.values())
+
+        @app.post("/api/v1/models/{model_id}/invoke")
+        async def invoke_model(model_id: str, payload: ModelInvokeRequest) -> dict[str, Any]:
+            REQUEST_COUNTER.labels(SERVICE_CONFIG["service_id"], "/api/v1/models/invoke").inc()
+            with REQUEST_LATENCY.labels(SERVICE_CONFIG["service_id"], "/api/v1/models/invoke").time():
+                if model_id not in MODEL_DEFS:
+                    raise HTTPException(status_code=404, detail=f"Model '{model_id}' not found")
+                last_user = next(
+                    (
+                        message.get("content", "")
+                        for message in reversed(payload.messages)
+                        if message.get("role") == "user"
+                    ),
+                    "",
+                )
+                content = f"[simulated:{model_id}] {last_user}".strip()
+                usage = {
+                    "requests": _MODEL_USAGE.get(model_id, {}).get("requests", 0) + 1,
+                    "last_input_chars": len(last_user),
+                    "last_used_at": datetime.now(UTC).isoformat(),
+                }
+                _MODEL_USAGE[model_id] = usage
+                return {"model_id": model_id, "content": content, "usage": usage}
+
+        @app.get("/api/v1/models/{model_id}/usage")
+        async def get_model_usage(model_id: str) -> dict[str, Any]:
+            return _MODEL_USAGE.get(model_id, {"requests": 0})
+
+    elif SERVICE_ROLE == "schema-registry":
+        @app.get("/api/v1/schemas/tools")
+        async def get_tool_schemas() -> dict[str, Any]:
+            return TOOL_SCHEMAS
+
+        @app.get("/api/v1/schemas/messages")
+        async def get_message_schemas() -> dict[str, Any]:
+            return MESSAGE_SCHEMAS
+
+    elif SERVICE_ROLE == "artifact-store":
+        @app.get("/api/v1/artifacts/manifest")
+        async def get_manifest() -> dict[str, Any]:
+            return SERVICE_CONFIG.get("manifest", {})
+
+        @app.get("/api/v1/artifacts/bundle")
+        async def get_bundle() -> dict[str, Any]:
+            return SERVICE_CONFIG.get("artifact_bundle", {})
+
+    elif SERVICE_ROLE == "build-controller":
+        @app.get("/api/v1/build")
+        async def get_build() -> dict[str, Any]:
+            return {
+                "status": "ready",
+                "manifest": SERVICE_CONFIG.get("manifest", {}),
+                "generated_at": datetime.now(UTC).isoformat(),
+            }
+
+    return app
+
+
+app = _build_app()
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=int(SERVICE_CONFIG["port"]))

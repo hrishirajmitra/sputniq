@@ -103,6 +103,7 @@
       "provider": "custom",
       "capabilities": [
         "chat",
+        "function-calling",
         "planning",
         "analysis"
       ]

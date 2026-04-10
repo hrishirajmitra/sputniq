@@ -14,6 +14,7 @@ from sputniq.config.errors import (
 from sputniq.config.errors import (
     ValidationError as ConfigValidationError,
 )
+from sputniq.generator.validation import validate_runtime_contracts
 from sputniq.models.platform import SputniqConfig
 from sputniq.models.workflows import WorkflowStep
 
@@ -47,6 +48,8 @@ def resolve_references(config: SputniqConfig) -> None:
     tools = {t.id for t in config.tools}
     models = {m.id for m in config.models}
     all_entities = agents | tools | models
+
+    validate_runtime_contracts(config)
 
     for agent in config.agents:
         if agent.model not in models:

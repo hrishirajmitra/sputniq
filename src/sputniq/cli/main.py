@@ -10,6 +10,7 @@ from rich.panel import Panel
 from sputniq.config.errors import ConfigError
 from sputniq.config.parser import detect_cycles, load_config, resolve_references
 from sputniq.generator.engine import generate_build_artifacts
+from sputniq.generator.validation import validate_source_tree
 
 console = Console()
 
@@ -40,7 +41,13 @@ _SAMPLE_CONFIG = {
             },
         }
     ],
-    "models": [{"id": "gpt-4o", "provider": "openai", "capabilities": ["chat"]}],
+    "models": [
+        {
+            "id": "gpt-4o",
+            "provider": "openai",
+            "capabilities": ["chat", "function-calling"],
+        }
+    ],
     "workflows": [
         {
             "id": "main-workflow",
@@ -88,9 +95,11 @@ def init(directory: str) -> None:
 def validate(config_path: str) -> None:
     """Validate a config file — schema, references, and cycles."""
     try:
-        config = load_config(Path(config_path))
+        config_file = Path(config_path)
+        config = load_config(config_file)
         resolve_references(config)
         detect_cycles(config)
+        validate_source_tree(config, config_file.parent)
         console.print(f"[green]✓[/green] [bold]{config_path}[/bold] is valid.")
     except ConfigError as e:
         console.print(f"[red]✗[/red] Validation failed: {e}")
@@ -105,9 +114,11 @@ def validate(config_path: str) -> None:
 def build(config_path: str, output_dir: str) -> None:
     """Validate config and generate service build artifacts."""
     try:
-        config = load_config(Path(config_path))
+        config_file = Path(config_path)
+        config = load_config(config_file)
         resolve_references(config)
         detect_cycles(config)
+        validate_source_tree(config, config_file.parent)
     except ConfigError as e:
         console.print(f"[red]✗[/red] Validation failed: {e}")
         raise SystemExit(1) from e

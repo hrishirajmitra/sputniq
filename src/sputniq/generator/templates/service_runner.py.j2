@@ -4,14 +4,27 @@ import json
 from pathlib import Path
 from typing import Any
 
+import httpx
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import PlainTextResponse
+from prometheus_client import Counter, Histogram, generate_latest
 from pydantic import BaseModel, Field
 
 APP_ROOT = Path(__file__).resolve().parent
 CONFIG_PATH = APP_ROOT / ".sputniq_service.json"
 _ENTRYPOINT_CACHE: dict[str, Any] = {}
+REQUEST_COUNTER = Counter(
+    "sputniq_runtime_requests_total",
+    "Number of requests handled by this generated runtime",
+    ["service_id", "route"],
+)
+REQUEST_LATENCY = Histogram(
+    "sputniq_runtime_request_seconds",
+    "Latency for generated service requests",
+    ["service_id", "route"],
+)
 
 
 def _load_service_config() -> dict[str, Any]:
@@ -19,6 +32,7 @@ def _load_service_config() -> dict[str, Any]:
 
 
 SERVICE_CONFIG = _load_service_config()
+PLATFORM_URLS = SERVICE_CONFIG.get("platform_urls", {})
 
 
 def _load_entrypoint(entrypoint: str) -> Any:
@@ -55,7 +69,14 @@ async def _maybe_await(result: Any) -> Any:
     return result
 
 
-async def _invoke_tool(tool_id: str, arguments: dict[str, Any]) -> Any:
+async def _post_json(url: str, payload: dict[str, Any]) -> dict[str, Any]:
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.post(url, json=payload)
+        response.raise_for_status()
+        return response.json()
+
+
+async def _invoke_tool_locally(tool_id: str, arguments: dict[str, Any]) -> Any:
     tool_map = SERVICE_CONFIG.get("tool_entrypoints", {})
     entrypoint = tool_map.get(tool_id)
     if entrypoint is None:
@@ -70,7 +91,29 @@ async def _invoke_tool(tool_id: str, arguments: dict[str, Any]) -> Any:
     return await _maybe_await(handler(**arguments))
 
 
-async def _default_model(model_id: str, messages: list[dict[str, str]], **_: Any) -> str:
+async def _invoke_tool(tool_id: str, arguments: dict[str, Any]) -> Any:
+    dispatcher_url = PLATFORM_URLS.get("tool-dispatcher")
+    if dispatcher_url and SERVICE_CONFIG["service_kind"] == "agent":
+        payload = await _post_json(
+            f"{dispatcher_url}/api/v1/tools/{tool_id}/invoke",
+            {"arguments": arguments},
+        )
+        return payload["result"]
+    return await _invoke_tool_locally(tool_id, arguments)
+
+
+async def _default_model(model_id: str, messages: list[dict[str, str]], **kwargs: Any) -> str:
+    proxy_url = PLATFORM_URLS.get("model-proxy")
+    if proxy_url:
+        payload = await _post_json(
+            f"{proxy_url}/api/v1/models/{model_id}/invoke",
+            {
+                "messages": messages,
+                "parameters": kwargs,
+            },
+        )
+        return payload["content"]
+
     last_user = next(
         (
             message.get("content", "")
@@ -122,6 +165,8 @@ class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1)
     history: list[dict[str, Any]] = Field(default_factory=list)
     context: dict[str, Any] = Field(default_factory=dict)
+    session_id: str | None = None
+    correlation_id: str | None = None
 
 
 class ToolRequest(BaseModel):
@@ -131,7 +176,9 @@ class ToolRequest(BaseModel):
 def _service_summary() -> dict[str, Any]:
     return {
         "service_id": SERVICE_CONFIG["service_id"],
+        "logical_id": SERVICE_CONFIG.get("logical_id", SERVICE_CONFIG["service_id"]),
         "service_kind": SERVICE_CONFIG["service_kind"],
+        "service_role": SERVICE_CONFIG.get("service_role", SERVICE_CONFIG["service_kind"]),
         "app_name": SERVICE_CONFIG["app_name"],
         "namespace": SERVICE_CONFIG["namespace"],
         "version": SERVICE_CONFIG["version"],
@@ -153,6 +200,8 @@ async def _run_agent(payload: ChatRequest) -> dict[str, Any]:
             "history": payload.history,
             "context": payload.context,
         },
+        session_id=payload.session_id,
+        correlation_id=payload.correlation_id,
     )
 
     if hasattr(target, "run"):
@@ -198,21 +247,32 @@ def _build_app() -> FastAPI:
     async def health() -> dict[str, Any]:
         return {"status": "ok", **_service_summary()}
 
+    @app.get("/metrics", response_class=PlainTextResponse)
+    async def metrics() -> str:
+        return generate_latest().decode("utf-8")
+
     if SERVICE_CONFIG["service_kind"] == "agent":
         @app.post("/api/chat")
         async def chat(payload: ChatRequest) -> dict[str, Any]:
-            try:
-                return await _run_agent(payload)
-            except Exception as exc:
-                raise HTTPException(status_code=500, detail=str(exc)) from exc
+            REQUEST_COUNTER.labels(SERVICE_CONFIG["service_id"], "/api/chat").inc()
+            with REQUEST_LATENCY.labels(SERVICE_CONFIG["service_id"], "/api/chat").time():
+                try:
+                    return await _run_agent(payload)
+                except Exception as exc:
+                    raise HTTPException(status_code=500, detail=str(exc)) from exc
     else:
         @app.post("/api/run")
         async def run_tool(payload: ToolRequest) -> dict[str, Any]:
-            try:
-                result = await _invoke_tool(SERVICE_CONFIG["service_id"], payload.arguments)
-                return {"result": result, "service": _service_summary()}
-            except Exception as exc:
-                raise HTTPException(status_code=500, detail=str(exc)) from exc
+            REQUEST_COUNTER.labels(SERVICE_CONFIG["service_id"], "/api/run").inc()
+            with REQUEST_LATENCY.labels(SERVICE_CONFIG["service_id"], "/api/run").time():
+                try:
+                    result = await _invoke_tool_locally(
+                        SERVICE_CONFIG["logical_id"],
+                        payload.arguments,
+                    )
+                    return {"result": result, "service": _service_summary()}
+                except Exception as exc:
+                    raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     return app
 

@@ -10,4 +10,4 @@ COPY . .
 ENV PYTHONUNBUFFERED=1
 ENV SERVICE_ID={{ service_id }}
 
-CMD ["python", ".sputniq_service_runner.py"]
+CMD ["python", "{{ runner_file }}"]

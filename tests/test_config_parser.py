@@ -5,11 +5,14 @@ from pathlib import Path
 import pytest
 
 from sputniq.config.errors import (
+    BuildValidationError,
     ConfigLoadError,
     CyclicDependencyError,
     ReferenceError,
+    ValidationError,
 )
 from sputniq.config.parser import detect_cycles, load_config, resolve_references
+from sputniq.generator.validation import validate_source_tree
 from sputniq.models.platform import SputniqConfig
 
 
@@ -65,3 +68,26 @@ class TestConfigParser:
 
         with pytest.raises(CyclicDependencyError, match="Cycle detected"):
             detect_cycles(config)
+
+    def test_resolve_references_requires_function_calling_for_tool_agents(self, tmp_path: Path):
+        config_path = tmp_path / "config.json"
+        config_path.write_text(
+            """
+            {
+              "platform": {"name": "demo"},
+              "agents": [{"id": "agent-a", "entrypoint": "src/agents/a.py:A", "model": "m1", "tools": ["tool-a"]}],
+              "tools": [{"id": "tool-a", "entrypoint": "src/tools/t.py:tool_a"}],
+              "models": [{"id": "m1", "provider": "openai", "capabilities": ["chat"]}],
+              "workflows": [{"id": "wf", "entrypoint_step": "s1", "steps": [{"id": "s1", "type": "agent", "ref": "agent-a"}]}]
+            }
+            """,
+            encoding="utf-8",
+        )
+        config = load_config(config_path)
+        with pytest.raises(ValidationError, match="function-calling"):
+            resolve_references(config)
+
+    def test_validate_source_tree_missing_entrypoint(self, fixtures_dir: Path):
+        config = load_config(fixtures_dir / "valid_config.json")
+        with pytest.raises(BuildValidationError, match="entrypoint file not found"):
+            validate_source_tree(config, fixtures_dir / "missing-root")
