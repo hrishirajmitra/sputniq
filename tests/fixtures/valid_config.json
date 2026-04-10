@@ -1,0 +1,79 @@
+{
+    "platform": {
+        "name": "agentos-test",
+        "version": "1.0.0",
+        "namespace": "test",
+        "runtime": "docker-compose",
+        "region": "local"
+    },
+    "infrastructure": {
+        "secrets": ["OPENAI_API_KEY"],
+        "message_bus": "kafka",
+        "state_store": "redis",
+        "metadata_store": "postgresql",
+        "extra": {}
+    },
+    "observability": {
+        "tracing": true,
+        "metrics": true,
+        "logging": true,
+        "trace_endpoint": "http://localhost:14268",
+        "metrics_endpoint": "http://localhost:9090",
+        "log_endpoint": "http://localhost:3100"
+    },
+    "agents": [
+        {
+            "id": "research-agent",
+            "description": "Research agent",
+            "entrypoint": "src/agents/research.py:ResearchAgent",
+            "model": "gpt-4o",
+            "tools": ["web-search"],
+            "memory": {"type": "sliding-window", "max_tokens": 4096},
+            "system_prompt": "You are a researcher",
+            "max_turns": 10,
+            "timeout_ms": 30000,
+            "retry": {"max_attempts": 3, "backoff": "exponential"}
+        }
+    ],
+    "tools": [
+        {
+            "id": "web-search",
+            "entrypoint": "src/tools/search.py:search",
+            "schema": {
+                "input": {"query": {"type": "string"}},
+                "output": {"results": {"type": "array"}}
+            },
+            "timeout_ms": 10000,
+            "rate_limit": {"requests_per_minute": 60}
+        }
+    ],
+    "models": [
+        {
+            "id": "gpt-4o",
+            "provider": "openai",
+            "capabilities": ["chat"],
+            "config": {}
+        }
+    ],
+    "workflows": [
+        {
+            "id": "qa-pipeline",
+            "description": "Basic QA",
+            "entrypoint_step": "step-1",
+            "steps": [
+                {
+                    "id": "step-1",
+                    "type": "agent",
+                    "ref": "research-agent",
+                    "next": ["step-2"]
+                },
+                {
+                    "id": "step-2",
+                    "type": "tool",
+                    "ref": "web-search",
+                    "next": []
+                }
+            ]
+        }
+    ]
+}

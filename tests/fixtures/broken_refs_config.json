@@ -1,0 +1,11 @@
+{
+    "platform": {"name": "test"},
+    "agents": [
+        {
+            "id": "agent-a",
+            "entrypoint": "src.a:A",
+            "model": "unknown-model",
+            "tools": ["unknown-tool"]
+        }
+    ]
+}

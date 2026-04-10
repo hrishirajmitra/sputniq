@@ -1,0 +1,23 @@
+{
+    "platform": {"name": "test"},
+    "workflows": [
+        {
+            "id": "cyclic-workflow",
+            "entrypoint_step": "step-1",
+            "steps": [
+                {
+                    "id": "step-1",
+                    "type": "agent",
+                    "ref": "agent-a",
+                    "next": ["step-2"]
+                },
+                {
+                    "id": "step-2",
+                    "type": "tool",
+                    "ref": "tool-a",
+                    "next": ["step-1"]
+                }
+            ]
+        }
+    ]
+}
