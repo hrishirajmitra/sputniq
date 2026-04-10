@@ -40,8 +40,9 @@ class ToolExecutor:
             raise
 
     async def _run_handler(self, handler: Callable, args: dict[str, Any]) -> Any:
+        import inspect
         # If the handler is an async function, await it; else run directly
-        if asyncio.iscoroutinefunction(handler):
+        if inspect.iscoroutinefunction(handler):
             return await handler(**args)
         else:
             # For synchronous handlers, we could run in a thread pool, but we'll run directly here for simplicity
@@ -75,7 +76,7 @@ class ModelProxy:
                 last_error = e
                 logger.warning(f"ModelProxy call to {provider}/{model_id} failed on attempt {attempt}: {e}")
                 # Exponential backoff simulation
-                await asyncio.sleep(0.01)
+                await asyncio.sleep(2 ** attempt)
                 
         logger.error(f"ModelProxy call failed after {retries} retries.")
         raise RuntimeError(f"All {retries} retries failed.") from last_error
