@@ -66,3 +66,22 @@ class TestGeneratorEngine:
         assert schemas_path.exists()
         schemas = json.loads(schemas_path.read_text())
         assert "web-search" in schemas
+
+    def test_model_endpoints_written(self, build_output: dict):
+        schemas_path = build_output["out"] / "schemas" / "model-endpoints.json"
+        assert schemas_path.exists()
+        schemas = json.loads(schemas_path.read_text())
+        assert "gpt-4o" in schemas
+
+    def test_orchestration_graphs_written(self, build_output: dict):
+        graphs_path = build_output["out"] / "orchestrations" / "graphs.json"
+        assert graphs_path.exists()
+        graphs = json.loads(graphs_path.read_text())
+        assert "qa-pipeline" in graphs
+
+    def test_manifest_entities(self, build_output: dict):
+        entities = build_output["manifest"]["entities"]
+        assert entities["agents"] == ["research-agent"]
+        assert entities["tools"] == ["web-search"]
+        assert entities["models"] == ["gpt-4o"]
+        assert entities["orchestrations"] == ["qa-pipeline"]

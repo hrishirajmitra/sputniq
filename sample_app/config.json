@@ -1,0 +1,59 @@
+{
+    "platform": {
+        "name": "weather-assistant",
+        "version": "1.0.0",
+        "namespace": "weather",
+        "runtime": "docker-compose",
+        "region": "local"
+    },
+    "infrastructure": {
+        "secrets": ["AIzaSyCSm1L2PWDTwD1o1zbuZgkmIKtf7hTzLMM"],
+        "message_bus": "kafka",
+        "state_store": "redis",
+        "metadata_store": "postgresql",
+        "extra": {}
+    },
+    "observability": {
+        "tracing": true,
+        "metrics": true,
+        "logging": true,
+        "trace_endpoint": "http://localhost:14268",
+        "metrics_endpoint": "http://localhost:9090",
+        "log_endpoint": "http://localhost:3100"
+    },
+    "agents": [
+        {
+            "id": "weather-agent",
+            "description": "An assistant that provides weather updates",
+            "entrypoint": "src/agents/weather.py:WeatherAgent",
+            "model": "gemini-2.5-flash",
+            "tools": ["get-weather"],
+            "memory": {"type": "sliding-window", "max_tokens": 4096},
+            "system_prompt": "You are a helpful weather assistant. Use the get-weather tool to find current weather.",
+            "max_turns": 10,
+            "timeout_ms": 30000,
+            "retry": {"max_attempts": 3, "backoff": "exponential"}
+        }
+    ],
+    "tools": [
+        {
+            "id": "get-weather",
+            "entrypoint": "src/tools/weather_api.py:get_weather",
+            "schema": {
+                "input": {"location": {"type": "string"}},
+                "output": {"temperature": {"type": "number"}, "condition": {"type": "string"}}
+            },
+            "timeout_ms": 10000,
+            "rate_limit": {"requests_per_minute": 60}
+        }
+    ],
+    "models": [
+        {
+            "id": "gemini-2.5-flash",
+            "provider": "google",
+            "capabilities": ["chat"],
+            "config": {}
+        }
+    ],
+    "orchestrations": []
+}

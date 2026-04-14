@@ -7,6 +7,7 @@ services:
     restart: unless-stopped
     environment:
       - SERVICE_ID={{ service_id }}
+      - SERVICE_TYPE={{ service_type }}
       - RUNTIME={{ runtime }}
 {% for secret in secrets %}
       - {{ secret }}=${{'{'}}{{ secret }}{{'}'}}

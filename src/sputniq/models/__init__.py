@@ -14,6 +14,7 @@ from sputniq.models.messages import (
     WorkflowStepMessage,
 )
 from sputniq.models.models import ModelDefinition
+from sputniq.models.orchestrations import OrchestrationDefinition, OrchestrationStep
 from sputniq.models.platform import (
     InfrastructureConfig,
     ObservabilityConfig,
@@ -35,6 +36,8 @@ __all__ = [
     "ModelRequest",
     "ModelResponse",
     "ObservabilityConfig",
+    "OrchestrationDefinition",
+    "OrchestrationStep",
     "PlatformConfig",
     "RateLimitConfig",
     "RetryConfig",

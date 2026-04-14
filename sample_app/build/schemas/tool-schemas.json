@@ -1,0 +1,17 @@
+{
+  "get-weather": {
+    "input": {
+      "location": {
+        "type": "string"
+      }
+    },
+    "output": {
+      "temperature": {
+        "type": "number"
+      },
+      "condition": {
+        "type": "string"
+      }
+    }
+  }
+}

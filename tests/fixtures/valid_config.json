@@ -55,7 +55,7 @@
             "config": {}
         }
     ],
-    "workflows": [
+    "orchestrations": [
         {
             "id": "qa-pipeline",
             "description": "Basic QA",

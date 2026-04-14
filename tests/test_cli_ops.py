@@ -1,10 +1,7 @@
-import json
-from pathlib import Path
 
 from click.testing import CliRunner
 
 from sputniq.cli.main import cli
-from sputniq.config.errors import ConfigError
 
 
 def test_cli_logs_all() -> None:
@@ -26,5 +23,5 @@ def test_cli_status() -> None:
     result = runner.invoke(cli, ["status"])
     assert result.exit_code == 0
     assert "AgentOS Status" in result.output
-    assert "Active Workflows" in result.output
+    assert "Active Orchestrations" in result.output
     assert "Healthy Services" in result.output

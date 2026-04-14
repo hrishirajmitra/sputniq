@@ -12,6 +12,7 @@ from sputniq.models import (
     ModelDefinition,
     ModelRequest,
     ModelResponse,
+    OrchestrationDefinition,
     PlatformConfig,
     SputniqConfig,
     ToolDefinition,
@@ -119,6 +120,24 @@ class TestWorkflowDefinition:
             ],
         )
         assert len(w.steps) == 2
+
+    def test_orchestration_control_nodes(self):
+        graph = OrchestrationDefinition(
+            id="support-router",
+            entrypoint_step="classify",
+            steps=[
+                {
+                    "id": "classify",
+                    "type": "branch",
+                    "next": ["answer", "escalate"],
+                    "routes": {"simple": "answer", "complex": "escalate"},
+                    "inputs": {"route": "simple"},
+                },
+                {"id": "answer", "type": "model", "ref": "gpt-4o"},
+                {"id": "escalate", "type": "agent", "ref": "human-reviewer"},
+            ],
+        )
+        assert graph.steps[0].ref is None
 
     def test_empty_steps(self):
         with pytest.raises(ValidationError):

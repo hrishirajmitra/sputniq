@@ -1,0 +1,32 @@
+{
+  "platform": "weather-assistant",
+  "version": "1.0.0",
+  "namespace": "weather",
+  "built_at": "2026-04-11T21:32:10.601975+00:00",
+  "entities": {
+    "agents": [
+      "weather-agent"
+    ],
+    "tools": [
+      "get-weather"
+    ],
+    "models": [
+      "gpt-4o"
+    ],
+    "orchestrations": []
+  },
+  "services": {
+    "weather-agent": {
+      "id": "weather-agent",
+      "type": "agent",
+      "runtime": "python"
+    },
+    "get-weather": {
+      "id": "get-weather",
+      "type": "tool",
+      "runtime": "python"
+    }
+  },
+  "orchestrations": [],
+  "workflows": []
+}

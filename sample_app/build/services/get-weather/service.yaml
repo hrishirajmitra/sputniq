@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  get-weather:
+    build: .
+    image: weather/get-weather:1.0.0
+    restart: unless-stopped
+    environment:
+      - SERVICE_ID=get-weather
+      - SERVICE_TYPE=tool
+      - RUNTIME=docker-compose
+
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+
+    networks:
+      - agentos-net
+
+networks:
+  agentos-net:
+    external: true

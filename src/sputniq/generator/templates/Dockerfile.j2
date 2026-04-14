@@ -10,6 +10,7 @@ COPY . .
 
 ENV PYTHONUNBUFFERED=1
 ENV SERVICE_ID={{ service_id }}
+ENV SERVICE_TYPE={{ service_type }}
 
 CMD ["python", "-m", "{{ module_path }}"]
 {% elif runtime_lang == "node" %}
@@ -23,6 +24,7 @@ RUN npm install
 COPY . .
 
 ENV SERVICE_ID={{ service_id }}
+ENV SERVICE_TYPE={{ service_type }}
 
 CMD ["node", "{{ entrypoint.split(':')[0] }}"]
 {% endif %}

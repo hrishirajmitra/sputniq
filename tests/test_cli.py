@@ -17,6 +17,7 @@ class TestCLIInit:
         assert (tmp_path / "config.json").exists()
         assert (tmp_path / "src" / "agents").is_dir()
         assert (tmp_path / "src" / "tools").is_dir()
+        assert (tmp_path / "src" / "orchestrations").is_dir()
 
     def test_init_valid_config(self, tmp_path: Path):
         runner = CliRunner()
@@ -25,6 +26,7 @@ class TestCLIInit:
         data = json.loads((tmp_path / "config.json").read_text())
         assert "platform" in data
         assert "agents" in data
+        assert "orchestrations" in data
 
     def test_init_skips_existing(self, tmp_path: Path):
         runner = CliRunner()

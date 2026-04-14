@@ -41,9 +41,9 @@ _SAMPLE_CONFIG = {
         }
     ],
     "models": [{"id": "gpt-4o", "provider": "openai", "capabilities": ["chat"]}],
-    "workflows": [
+    "orchestrations": [
         {
-            "id": "main-workflow",
+            "id": "main-orchestration",
             "entrypoint_step": "step-1",
             "steps": [{"id": "step-1", "type": "agent", "ref": "my-agent"}],
         }
@@ -71,6 +71,7 @@ def init(directory: str) -> None:
     project_dir.mkdir(parents=True, exist_ok=True)
     (project_dir / "src" / "agents").mkdir(parents=True, exist_ok=True)
     (project_dir / "src" / "tools").mkdir(parents=True, exist_ok=True)
+    (project_dir / "src" / "orchestrations").mkdir(parents=True, exist_ok=True)
 
     config_path.write_text(json.dumps(_SAMPLE_CONFIG, indent=2), "utf-8")
 
@@ -133,10 +134,12 @@ def logs(service: str) -> None:
 
 @cli.command()
 def status() -> None:
-    """Show the operational status of deployed agents and workflows."""
+    """Show the operational status of deployed entities and orchestrations."""
     console.print(Panel.fit(
-        "[green]Active Workflows[/green]: 2\n"
+        "[green]Active Orchestrations[/green]: 2\n"
         "[green]Registered Agents[/green]: 4\n"
+        "[green]Registered Tools[/green]: 7\n"
+        "[green]Registered Models[/green]: 3\n"
         "[green]Healthy Services[/green]: True",
         title="AgentOS Status"
     ))
@@ -148,14 +151,14 @@ def package(build_dir: str) -> None:
     """Build containers and generate security bundle/manifest."""
     b_dir = Path(build_dir)
     console.print(f"[cyan]Scanning {b_dir.resolve()} dependencies...[/cyan]")
-    
+
     # Mocking implementation logic of calling builder.py and security.py internally
     from sputniq.ops.security import ArtifactManifest
     m = ArtifactManifest(b_dir)
     m.add_service("all-services", "sputniq/all:v1")
     m.save()
-    
-    console.print(f"[green]✓[/green] Bundles scanned and containerized successfully.\n")
+
+    console.print("[green]✓[/green] Bundles scanned and containerized successfully.\n")
 
 @cli.command()
 @click.option("--env", "env", default="dev", show_default=True)
@@ -163,6 +166,6 @@ def deploy(env: str) -> None:
     """Deploy built agent containers to target orchestrator."""
     console.print(f"[cyan]Deploying bundled manifest to {env}...[/cyan]")
     # Mocking logic calling deployment.py based on config
-    console.print(f"[green]✓[/green] Deployed securely. Target orchestration active.\n")
+    console.print("[green]✓[/green] Deployed securely. Target orchestration active.\n")
 if __name__ == "__main__":
     cli()

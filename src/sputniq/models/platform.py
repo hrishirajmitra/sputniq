@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from sputniq.models.agents import AgentDefinition
 from sputniq.models.models import ModelDefinition
+from sputniq.models.orchestrations import OrchestrationDefinition
 from sputniq.models.tools import ToolDefinition
-from sputniq.models.workflows import WorkflowDefinition
 
 
 class PlatformConfig(BaseModel):
@@ -50,6 +50,29 @@ class SputniqConfig(BaseModel):
     agents: list[AgentDefinition] = Field(default_factory=list)
     tools: list[ToolDefinition] = Field(default_factory=list)
     models: list[ModelDefinition] = Field(default_factory=list)
-    workflows: list[WorkflowDefinition] = Field(default_factory=list)
+    orchestrations: list[OrchestrationDefinition] = Field(default_factory=list)
+    workflows: list[OrchestrationDefinition] = Field(
+        default_factory=list,
+        description="Deprecated alias for orchestrations.",
+    )
     infrastructure: InfrastructureConfig = Field(default_factory=InfrastructureConfig)
     observability: ObservabilityConfig = Field(default_factory=ObservabilityConfig)
+
+    @model_validator(mode="after")
+    def _sync_orchestration_aliases(self) -> SputniqConfig:
+        if self.orchestrations and self.workflows:
+            by_id = {orchestration.id: orchestration for orchestration in self.orchestrations}
+            for workflow in self.workflows:
+                if workflow.id in by_id and workflow != by_id[workflow.id]:
+                    raise ValueError(
+                        f"Conflicting orchestration/workflow definitions for '{workflow.id}'"
+                    )
+                by_id.setdefault(workflow.id, workflow)
+            merged = list(by_id.values())
+            self.orchestrations = merged
+            self.workflows = merged
+        elif self.workflows:
+            self.orchestrations = list(self.workflows)
+        else:
+            self.workflows = list(self.orchestrations)
+        return self

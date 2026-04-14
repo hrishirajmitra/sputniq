@@ -1,6 +1,6 @@
 {
     "platform": {"name": "test"},
-    "workflows": [
+    "orchestrations": [
         {
             "id": "cyclic-workflow",
             "entrypoint_step": "step-1",

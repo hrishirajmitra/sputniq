@@ -28,6 +28,7 @@ def _module_from_entrypoint(entrypoint: str) -> str:
 def _render_service(
     env: Environment,
     service_id: str,
+    service_type: str,
     entrypoint: str,
     runtime_lang: str,
     config: SputniqConfig,
@@ -38,6 +39,7 @@ def _render_service(
 
     ctx = {
         "service_id": service_id,
+        "service_type": service_type,
         "entrypoint": entrypoint,
         "module_path": _module_from_entrypoint(entrypoint),
         "runtime_lang": runtime_lang,
@@ -45,7 +47,26 @@ def _render_service(
         "version": config.platform.version,
         "runtime": config.platform.runtime,
         "secrets": config.infrastructure.secrets,
-        "extra_deps": ["fastapi", "uvicorn", "requests"],
+        "extra_deps": [
+            "fastapi>=0.110.0",
+            "uvicorn>=0.29.0",
+            "requests",
+            "pydantic>=2.0",
+            "click>=8.0",
+            "jinja2>=3.0",
+            "rich>=13.0",
+            "aiokafka>=0.11.0",
+            "redis>=5.0.0",
+            "asyncpg>=0.29.0",
+            "docker>=7.0.0",
+            "opentelemetry-api>=1.20.0",
+            "opentelemetry-sdk>=1.20.0",
+            "opentelemetry-exporter-otlp>=1.20.0",
+            "prometheus-client>=0.19.0",
+            "python-jose[cryptography]>=3.3.0",
+            "langgraph>=0.0.30",
+            "python-multipart>=0.0.9"
+        ],
     }
 
     templates = [
@@ -55,14 +76,14 @@ def _render_service(
     if runtime_lang == "python":
         templates.append(("requirements.txt.j2", "requirements.txt"))
     elif runtime_lang == "node":
-        pass # Handle package.json logic if necessary in the future
+        pass  # Handle package.json logic if necessary in the future
 
     for tmpl_name, out_name in templates:
         rendered = env.get_template(tmpl_name).render(ctx)
         (service_dir / out_name).write_text(rendered, "utf-8")
 
 
-def _generate_linux_prereqs(output_dir: Path):
+def _generate_linux_prereqs(output_dir: Path) -> None:
     """Generate vanilla Linux installation scripts."""
     install_sh = """#!/bin/bash
 set -e
@@ -92,41 +113,84 @@ def generate_build_artifacts(config: SputniqConfig, output_dir: Path) -> dict:
     env = _jinja_env()
     services_dir = output_dir / "services"
     schemas_dir = output_dir / "schemas"
+    graphs_dir = output_dir / "orchestrations"
     schemas_dir.mkdir(parents=True, exist_ok=True)
-    
+    graphs_dir.mkdir(parents=True, exist_ok=True)
+
     _generate_linux_prereqs(output_dir)
 
-    service_ids: list[str] = []
+    services: dict[str, dict[str, str]] = {}
 
     for agent in config.agents:
-        _render_service(env, agent.id, agent.entrypoint, agent.runtime, config, services_dir / agent.id)
-        service_ids.append(agent.id)
+        _render_service(
+            env,
+            agent.id,
+            "agent",
+            agent.entrypoint,
+            agent.runtime,
+            config,
+            services_dir / agent.id,
+        )
+        services[agent.id] = {"id": agent.id, "type": "agent", "runtime": agent.runtime}
 
     for tool in config.tools:
-        _render_service(env, tool.id, tool.entrypoint, tool.runtime, config, services_dir / tool.id)
-        service_ids.append(tool.id)
+        _render_service(
+            env,
+            tool.id,
+            "tool",
+            tool.entrypoint,
+            tool.runtime,
+            config,
+            services_dir / tool.id,
+        )
+        services[tool.id] = {"id": tool.id, "type": "tool", "runtime": tool.runtime}
 
-    # Write tool schemas
-    tool_schemas = {
-        t.id: t.schema_def.model_dump() for t in config.tools
-    }
+    tool_schemas = {tool.id: tool.schema_def.model_dump() for tool in config.tools}
     (schemas_dir / "tool-schemas.json").write_text(
         json.dumps(tool_schemas, indent=2), "utf-8"
     )
+    model_endpoints = {
+        model.id: {
+            "provider": model.provider,
+            "endpoint": model.endpoint,
+            "capabilities": model.capabilities,
+            "config": model.config,
+        }
+        for model in config.models
+    }
+    (schemas_dir / "model-endpoints.json").write_text(
+        json.dumps(model_endpoints, indent=2), "utf-8"
+    )
+    orchestration_graphs = {
+        orchestration.id: orchestration.model_dump(mode="json")
+        for orchestration in config.orchestrations
+    }
+    (graphs_dir / "graphs.json").write_text(
+        json.dumps(orchestration_graphs, indent=2), "utf-8"
+    )
 
-    manifest = _generate_manifest(config, service_ids)
+    manifest = _generate_manifest(config, services)
     (output_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), "utf-8")
 
     return manifest
 
 
-def _generate_manifest(config: SputniqConfig, service_ids: list[str]) -> dict:
+def _generate_manifest(config: SputniqConfig, services: dict[str, dict[str, str]]) -> dict:
     """Build the build manifest dictionary."""
     return {
         "platform": config.platform.name,
         "version": config.platform.version,
         "namespace": config.platform.namespace,
         "built_at": datetime.now(UTC).isoformat(),
-        "services": {sid: {"id": sid} for sid in service_ids},
-        "workflows": [w.id for w in config.workflows],
+        "entities": {
+            "agents": [agent.id for agent in config.agents],
+            "tools": [tool.id for tool in config.tools],
+            "models": [model.id for model in config.models],
+            "orchestrations": [
+                orchestration.id for orchestration in config.orchestrations
+            ],
+        },
+        "services": services,
+        "orchestrations": [orchestration.id for orchestration in config.orchestrations],
+        "workflows": [orchestration.id for orchestration in config.orchestrations],
     }

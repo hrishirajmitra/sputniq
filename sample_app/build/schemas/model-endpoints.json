@@ -1,0 +1,10 @@
+{
+  "gpt-4o": {
+    "provider": "openai",
+    "endpoint": null,
+    "capabilities": [
+      "chat"
+    ],
+    "config": {}
+  }
+}
