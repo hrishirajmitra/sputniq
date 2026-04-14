@@ -118,7 +118,7 @@ def deploy_app(config, extract_dir: Path):
                 import subprocess
                 sp1 = subprocess.Popen(["docker", "save", tag], stdout=subprocess.PIPE)
                 sp2 = subprocess.Popen([
-                    "ssh", "-o", "StrictHostKeyChecking=no", "-i", ".ssh-nodes/id_rsa",
+                    "ssh", "-o", "StrictHostKeyChecking=no", "-i", "/root/.ssh/id_rsa",
                     f"root@{selected_node.ip_address}", "docker", "load"
                 ], stdin=sp1.stdout, stdout=subprocess.PIPE)
                 sp1.stdout.close()

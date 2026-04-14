@@ -22,10 +22,10 @@ def get_inventory() -> List[VMNode]:
     nodes = []
     try:
         for i in range(1, 16):
-            # Assuming docker-compose-nodes.yml services start with sputniq-node
-            # Let's just use the default docker-compose container names: sputniq-node-1-1
-            container_name = f"sputniq-node-{i}-1"
-            res = subprocess.run(["docker", "inspect", "-f", "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}", container_name], capture_output=True, text=True)
+            # Assuming docker-compose-nodes.yml services start with infrastructure-node
+            # Let's just use the default docker-compose container names: infrastructure-node-1-1
+            container_name = f"infrastructure-node-{i}-1"
+            res = subprocess.run(["docker", "inspect", "-f", "{{range $k, $v := .NetworkSettings.Networks}}{{$v.IPAddress}}{{end}}", container_name], capture_output=True, text=True)
             ip = res.stdout.strip()
             if ip:
                 nodes.append(VMNode(
