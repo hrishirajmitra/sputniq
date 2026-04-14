@@ -1,6 +1,13 @@
 """Data models for Sputniq platform entities."""
 
 from sputniq.models.agents import AgentDefinition, MemoryConfig, RetryConfig
+from sputniq.models.boot import (
+    AppBootPhase,
+    BootEvent,
+    BootStatus,
+    SystemBootPhase,
+    SystemServiceStatus,
+)
 from sputniq.models.messages import (
     AgentInput,
     AgentOutput,
@@ -15,10 +22,15 @@ from sputniq.models.messages import (
 )
 from sputniq.models.models import ModelDefinition
 from sputniq.models.platform import (
+    AppInstanceConfig,
+    BootCycleConfig,
     InfrastructureConfig,
     ObservabilityConfig,
     PlatformConfig,
+    RepositoryConfig,
+    RuntimeDefinition,
     SputniqConfig,
+    SystemINITConfig,
 )
 from sputniq.models.tools import RateLimitConfig, ToolDefinition, ToolSchema
 from sputniq.models.workflows import WorkflowDefinition, WorkflowStep
@@ -27,6 +39,11 @@ __all__ = [
     "AgentDefinition",
     "AgentInput",
     "AgentOutput",
+    "AppBootPhase",
+    "AppInstanceConfig",
+    "BootCycleConfig",
+    "BootEvent",
+    "BootStatus",
     "Error",
     "HeartBeat",
     "InfrastructureConfig",
@@ -37,8 +54,13 @@ __all__ = [
     "ObservabilityConfig",
     "PlatformConfig",
     "RateLimitConfig",
+    "RepositoryConfig",
     "RetryConfig",
+    "RuntimeDefinition",
     "SputniqConfig",
+    "SystemBootPhase",
+    "SystemINITConfig",
+    "SystemServiceStatus",
     "ToolDefinition",
     "ToolRequest",
     "ToolResponse",
@@ -48,3 +70,4 @@ __all__ = [
     "WorkflowStep",
     "WorkflowStepMessage",
 ]
+

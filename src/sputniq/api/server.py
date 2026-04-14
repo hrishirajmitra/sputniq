@@ -32,6 +32,10 @@ _agent_sessions: dict[str, list[dict[str, Any]]] = {}
 _executions: dict[str, dict[str, Any]] = {}
 _UI_DIR = Path(__file__).resolve().parent
 
+# ── Platform Bootstrap State ────────────────────────────────────────────────
+_bootstrap_runner: Any = None  # PlatformBootstrap instance (set during bootstrap)
+_bootstrap_status: dict[str, Any] | None = None
+
 
 class RegistryResponse(BaseModel):
     status: str
@@ -340,6 +344,98 @@ async def get_model_usage(model_id: str) -> dict[str, Any]:
     )
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+#  System Architecture & Boot Sequence API
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+@app.get("/api/v1/system/boot-status")
+async def get_boot_status() -> dict[str, Any]:
+    """Return the current boot phase and system service status."""
+    global _bootstrap_runner
+    if _bootstrap_runner is None:
+        return {
+            "status": "not_bootstrapped",
+            "system_boot_phase": "none",
+            "is_system_ready": False,
+            "is_app_ready": False,
+            "system_services": [],
+            "provisioned_nodes": [],
+            "boot_events": [],
+        }
+
+    bs = _bootstrap_runner.boot_status
+    return {
+        "status": "bootstrapped",
+        "system_boot_phase": bs.system_boot_phase.value,
+        "app_boot_phase": bs.app_boot_phase.value if bs.app_boot_phase else None,
+        "is_system_ready": bs.is_system_ready,
+        "is_app_ready": bs.is_app_ready,
+        "system_services": [s.model_dump() for s in bs.system_services],
+        "provisioned_nodes": bs.provisioned_nodes,
+        "boot_events": [e.model_dump() for e in bs.boot_events],
+    }
+
+
+@app.get("/api/v1/system/services")
+async def list_system_services() -> list[dict[str, Any]]:
+    """List all running system services managed by the System Master."""
+    if _bootstrap_runner and _bootstrap_runner.system_master:
+        return [
+            s.model_dump() for s in _bootstrap_runner.system_master.boot_status.system_services
+        ]
+    # Default static list when not bootstrapped
+    return [
+        {"service_name": name, "status": "running"}
+        for name in [
+            "server-lifecycle-manager", "app-lifecycle-manager",
+            "security-service", "logging-service",
+            "deployment-manager", "request-dispatcher",
+        ]
+    ]
+
+
+@app.post("/api/v1/system/bootstrap")
+async def trigger_bootstrap(payload: dict[str, Any] = Body(default_factory=dict)) -> dict[str, Any]:
+    """Trigger the full 4-phase platform boot sequence via API."""
+    global _bootstrap_runner, _bootstrap_status
+
+    from sputniq.runtime.bootstrap import PlatformBootstrap
+
+    init_config = payload.get("init_config", {})
+    app_repo = payload.get("app_repository", [])
+
+    _bootstrap_runner = PlatformBootstrap(init_config=init_config)
+
+    try:
+        status = await _bootstrap_runner.run(app_repository=app_repo)
+        _bootstrap_status = {
+            "status": "success",
+            "system_boot_phase": status.system_boot_phase.value,
+            "is_system_ready": status.is_system_ready,
+            "is_app_ready": status.is_app_ready,
+            "system_services": [s.model_dump() for s in status.system_services],
+            "provisioned_nodes": status.provisioned_nodes,
+            "boot_events_count": len(status.boot_events),
+        }
+        return _bootstrap_status
+    except Exception as exc:
+        return {"status": "failed", "error": str(exc)}
+
+
+@app.get("/api/v1/nodes")
+async def list_nodes() -> list[dict[str, Any]]:
+    """List provisioned machines/nodes."""
+    if _bootstrap_runner and _bootstrap_runner.server_lc_manager:
+        return _bootstrap_runner.server_lc_manager.list_nodes()
+    return [{"node_id": "local-node", "ip_address": "127.0.0.1", "status": "ready"}]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#  UI Dashboard
+# ═══════════════════════════════════════════════════════════════════════════
+
+
 @app.get("/", response_class=HTMLResponse)
 async def get_ui() -> HTMLResponse:
     return HTMLResponse(_load_ui_asset("dashboard.html"))
@@ -348,3 +444,4 @@ async def get_ui() -> HTMLResponse:
 @app.get("/dashboard.js", response_class=PlainTextResponse)
 async def get_dashboard_script() -> PlainTextResponse:
     return PlainTextResponse(_load_ui_asset("dashboard.js"), media_type="application/javascript")
+

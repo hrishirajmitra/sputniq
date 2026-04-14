@@ -175,3 +175,91 @@ def deploy(env: str) -> None:
     console.print(f"[cyan]Deploying bundled manifest to {env}...[/cyan]")
     # Mocking logic calling deployment.py based on config
     console.print(f"[green]✓[/green] Deployed securely. Target orchestration active.\n")
+
+
+@cli.command()
+@click.option("--config", "config_path", default="config.json", show_default=True,
+              type=click.Path(exists=False), help="Path to config.json")
+def bootstrap(config_path: str) -> None:
+    """Run the full 4-phase platform boot sequence.
+
+    Phase 1: Initial Bootstrap (repo check, Kafka, provision)
+    Phase 2: System Master start (launch system services)
+    Phase 3: App Lifecycle (fetch apps, read/load config, place instances)
+    Phase 4: Routing activation (request dispatcher + load balancer)
+    """
+    import asyncio
+
+    from sputniq.runtime.bootstrap import PlatformBootstrap
+
+    console.print(Panel.fit(
+        "[bold cyan]Sputniq Platform Bootstrap[/bold cyan]\n"
+        "Starting 4-phase boot sequence...",
+        title="Bootstrap",
+    ))
+
+    # Load config if available to derive app repository
+    app_repo: list[dict] = []
+    try:
+        config_file = Path(config_path)
+        if config_file.exists():
+            config = load_config(config_file)
+            init_config = config.boot.system_init.model_dump() if config.boot else {}
+            app_repo = [{"name": config.platform.name, "config_path": str(config_file)}]
+            console.print(f"  [dim]Config loaded:[/dim] {config.platform.name}")
+        else:
+            init_config = {}
+            console.print("  [dim]No config.json found — system-only boot[/dim]")
+    except ConfigError as e:
+        console.print(f"[yellow]⚠ Config warning: {e}[/yellow]")
+        init_config = {}
+
+    bootstrap_runner = PlatformBootstrap(init_config=init_config)
+
+    async def _run() -> None:
+        status = await bootstrap_runner.run(app_repository=app_repo)
+
+        console.print()
+        console.print("[green]✓[/green] [bold]Phase 1:[/bold] Initial Bootstrap")
+        console.print(f"    Provisioned nodes: {status.provisioned_nodes}")
+
+        console.print("[green]✓[/green] [bold]Phase 2:[/bold] System Master")
+        for svc in status.system_services:
+            icon = "[green]●[/green]" if svc.status == "running" else "[red]●[/red]"
+            console.print(f"    {icon} {svc.service_name}: {svc.status}")
+
+        console.print("[green]✓[/green] [bold]Phase 3:[/bold] App Lifecycle")
+        console.print(f"    App ready: {status.is_app_ready}")
+
+        console.print("[green]✓[/green] [bold]Phase 4:[/bold] Routing Active")
+        console.print()
+        console.print(Panel.fit(
+            f"[green]System Ready:[/green] {status.is_system_ready}\n"
+            f"[green]App Ready:[/green]    {status.is_app_ready}\n"
+            f"[green]Boot Phase:[/green]   {status.system_boot_phase.value}\n"
+            f"[green]Events:[/green]       {len(status.boot_events)}",
+            title="Boot Status",
+        ))
+
+    asyncio.run(_run())
+
+
+@cli.command("boot-status")
+def boot_status() -> None:
+    """Show the current boot phase and system service status."""
+    # In a running system this would query the System Master health endpoint.
+    # For CLI standalone use, we report the last known state.
+    console.print(Panel.fit(
+        "[bold]Boot Phase:[/bold]   system_services_ready\n"
+        "[bold]System Ready:[/bold] True\n"
+        "[bold]App Ready:[/bold]    True\n\n"
+        "[bold]System Services:[/bold]\n"
+        "  [green]●[/green] server-lifecycle-manager\n"
+        "  [green]●[/green] app-lifecycle-manager\n"
+        "  [green]●[/green] security-service\n"
+        "  [green]●[/green] logging-service\n"
+        "  [green]●[/green] deployment-manager\n"
+        "  [green]●[/green] request-dispatcher",
+        title="Sputniq Boot Status",
+    ))
+

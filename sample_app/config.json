@@ -9,7 +9,7 @@
   "agents": [
     {
       "id": "weather-agent",
-      "description": "Answers questions about the weather.",
+      "description": "Answers questions about the weather using tools and models.",
       "entrypoint": "src/agents/weather.py:WeatherAgent",
       "model": "gpt-mock",
       "tools": [
@@ -40,15 +40,15 @@
     }
   ],
   "models": [
-        {
-            "id": "gpt-mock",
-            "provider": "openai",
-            "capabilities": [
-                "chat",
-                "function-calling"
-            ]
-        }
-    ],
+    {
+      "id": "gpt-mock",
+      "provider": "openai",
+      "capabilities": [
+        "chat",
+        "function-calling"
+      ]
+    }
+  ],
   "workflows": [
     {
       "id": "weather-workflow",
@@ -62,5 +62,37 @@
         }
       ]
     }
-  ]
+  ],
+  "runtime": {
+    "system_runtime": "docker",
+    "app_type_runtime": "python",
+    "runtime_version": "3.11"
+  },
+  "repository": {
+    "system_repo": ".",
+    "app_repo": "."
+  },
+  "boot": {
+    "auto_bootstrap": false,
+    "system_init": {
+      "kafka_bootstrap_servers": "localhost:9092",
+      "lb_strategy": "round-robin",
+      "initial_nodes": 1,
+      "services": [
+        "server-lifecycle-manager",
+        "app-lifecycle-manager",
+        "security-service",
+        "logging-service",
+        "deployment-manager",
+        "request-dispatcher"
+      ]
+    },
+    "app_instances": [
+      {
+        "instance_id": "weather-agent-0",
+        "replicas": 1,
+        "weight": 1
+      }
+    ]
+  }
 }
