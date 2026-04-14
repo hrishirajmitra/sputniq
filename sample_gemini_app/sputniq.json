@@ -1,0 +1,47 @@
+{
+    "platform": {
+        "name": "gemini-sample-app",
+        "env": {
+            "GEMINI_API_KEY": "AIzaSyCSm1L2PWDTwD1o1zbuZgkmIKtf7hTzLMM",
+            "GOOGLE_API_KEY": "AIzaSyCSm1L2PWDTwD1o1zbuZgkmIKtf7hTzLMM"
+        }
+    },
+    "models": [
+        {
+            "id": "gemini-2.5-flash",
+            "provider": "google"
+        }
+    ],
+    "tools": [
+        {
+            "id": "custom-api-fetch",
+            "entrypoint": "src/tools/api_fetch.py:fetch_api_data",
+            "schema": {
+                "input": {"endpoint": {"type": "string"}, "params": {"type": "object"}},
+                "output": {"response": {"type": "object"}}
+            }
+        }
+    ],
+    "agents": [
+        {
+            "id": "api-assistant",
+            "entrypoint": "src/agents/assistant.py:ApiAssistantAgent",
+            "model": "gemini-2.5-flash",
+            "tools": ["custom-api-fetch"]
+        }
+    ],
+    "workflows": [
+        {
+            "id": "api-query-pipeline",
+            "entrypoint_step": "start",
+            "steps": [
+                {
+                    "id": "start",
+                    "type": "agent",
+                    "ref": "api-assistant",
+                    "next": []
+                }
+            ]
+        }
+    ]
+}

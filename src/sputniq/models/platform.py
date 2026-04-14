@@ -20,6 +20,7 @@ class PlatformConfig(BaseModel):
     namespace: str = Field(default="default")
     runtime: Literal["kubernetes", "docker-compose"] = "docker-compose"
     region: str = Field(default="local")
+    env: dict[str, str] = Field(default_factory=dict)
 
 
 class InfrastructureConfig(BaseModel):

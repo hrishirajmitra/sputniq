@@ -1,0 +1,112 @@
+version: '3.8'
+
+services:
+  node-1:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-2:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-3:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-4:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-5:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-6:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-7:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-8:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-9:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-10:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-11:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-12:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-13:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-14:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+  node-15:
+    build:
+      context: .ssh-nodes
+      dockerfile: Dockerfile
+    privileged: true
+    networks:
+      - sputniq_default
+
+networks:
+  sputniq_default:
+    external: true

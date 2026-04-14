@@ -96,3 +96,19 @@ class Error(BaseMessage):
 class HeartBeat(BaseMessage):
     entity_id: str
     status: str = "alive"
+
+# ── Kafka Adapter Messages ──────────────────────────────────────────────────
+
+class ToolCommand(BaseMessage):
+    """Instruction for a tool worker to execute a specific tool via Kafka."""
+    reply_to: str | None = None
+    tool_id: str
+    endpoint: str
+    params: dict[str, Any]
+
+class ToolResult(BaseMessage):
+    """Asynchronous response emitted by a tool worker back to an agent/orchestrator."""
+    tool_id: str
+    status: str
+    result: Any
+    error_message: str | None = None

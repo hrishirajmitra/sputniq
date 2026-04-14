@@ -1,0 +1,903 @@
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+Unable connect to node with id 1: Multiple exceptions: [Errno 111] Connect call failed ('::1', 9092, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 9092)
+Unable to update metadata from [1]
+=== Starting Sputniq Decoupled LangGraph Local Runner API ===
+Invoking LLM...
+INFO:     172.17.0.1:57326 - "POST /api/ask HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/uvicorn/protocols/http/h11_impl.py", line 415, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/run.py", line 29, in ask_question
+    async for output in orchestrator.astream(inputs, stream_mode="values"):
+  File "/usr/local/lib/python3.11/site-packages/langgraph/pregel/main.py", line 3128, in astream
+    async for _ in runner.atick(
+  File "/usr/local/lib/python3.11/site-packages/langgraph/pregel/_runner.py", line 304, in atick
+    await arun_with_retry(
+  File "/usr/local/lib/python3.11/site-packages/langgraph/pregel/_retry.py", line 242, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/_internal/_runnable.py", line 705, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/_internal/_runnable.py", line 473, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/prebuilt/tool_node.py", line 853, in _afunc
+    outputs = await asyncio.gather(*coros)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/prebuilt/tool_node.py", line 1184, in _arun_one
+    return await self._execute_tool_async(tool_request, input_type, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/prebuilt/tool_node.py", line 1133, in _execute_tool_async
+    content = _handle_tool_error(e, flag=self._handle_tool_errors)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/prebuilt/tool_node.py", line 432, in _handle_tool_error
+    content = flag(e)  # type: ignore [assignment, call-arg]
+              ^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langgraph/prebuilt/tool_node.py", line 389, in _default_handle_tool_errors
+    raise e
+  File "/usr/local/lib/python3.11/site-packages/langgraph/prebuilt/tool_node.py", line 1090, in _execute_tool_async
+    response = await tool.ainvoke(call_args, config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langchain_core/tools/structured.py", line 70, in ainvoke
+    return await super().ainvoke(input, config, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langchain_core/tools/base.py", line 652, in ainvoke
+    return await self.arun(tool_input, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langchain_core/tools/base.py", line 1131, in arun
+    raise error_to_raise
+  File "/usr/local/lib/python3.11/site-packages/langchain_core/tools/base.py", line 1097, in arun
+    response = await coro_with_context(coro, context)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/langchain_core/tools/structured.py", line 124, in _arun
+    return await self.coroutine(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/sputniq/runtime/kafka_adapter.py", line 22, in kafka_rpc_call
+    await consumer.start()
+  File "/app/sputniq/bus/kafka.py", line 57, in start
+    await self._consumer.start()
+  File "/usr/local/lib/python3.11/site-packages/aiokafka/consumer/consumer.py", line 365, in start
+    await self._wait_topics()
+  File "/usr/local/lib/python3.11/site-packages/aiokafka/consumer/consumer.py", line 433, in _wait_topics
+    await self._client._wait_on_metadata(topic)
+  File "/usr/local/lib/python3.11/site-packages/aiokafka/client.py", line 509, in _wait_on_metadata
+    raise UnknownTopicOrPartitionError()
+aiokafka.errors.UnknownTopicOrPartitionError: [Error 3] UnknownTopicOrPartitionError
+During task with name 'tools' and id 'edb33cdb-2a03-435e-aeb4-6c0e9b1d8211'

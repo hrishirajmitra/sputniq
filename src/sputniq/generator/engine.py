@@ -48,7 +48,7 @@ def _render_service(
     for tmpl_name, out_name in [
         ("Dockerfile.j2", "Dockerfile"),
         ("service.yaml.j2", "service.yaml"),
-        ("requirements.txt.j2", "requirements.txt"),
+        ("requirements.txt.j2", "requirements.txt"), ("run_worker.py.j2", "run_worker.py"),
     ]:
         rendered = env.get_template(tmpl_name).render(ctx)
         (service_dir / out_name).write_text(rendered, "utf-8")
@@ -73,6 +73,19 @@ def generate_build_artifacts(config: SputniqConfig, output_dir: Path) -> dict:
     for tool in config.tools:
         _render_service(env, tool.id, tool.entrypoint, config, services_dir / tool.id)
         service_ids.append(tool.id)
+
+    # Generate Dockerfile for workflows
+    for workflow in getattr(config, "workflows", []):
+        wf_dir = services_dir / workflow.id
+        wf_dir.mkdir(parents=True, exist_ok=True)
+        dockerfile = "FROM python:3.11-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . .\nCMD [\"python\", \"run.py\"]\n"
+        (wf_dir / "Dockerfile").write_text(dockerfile, "utf-8")
+        
+        ctx = {"extra_deps": []}
+        rendered = env.get_template("requirements.txt.j2").render(ctx)
+        (wf_dir / "requirements.txt").write_text(rendered, "utf-8")
+        
+        service_ids.append(workflow.id)
 
     # Write tool schemas
     tool_schemas = {

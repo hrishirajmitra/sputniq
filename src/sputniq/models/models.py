@@ -10,8 +10,8 @@ from pydantic import BaseModel, Field
 class ModelDefinition(BaseModel):
     """Declarative definition of an inference endpoint."""
 
-    id: str = Field(..., min_length=1, pattern=r"^[a-z0-9][a-z0-9\-]*$")
-    provider: Literal["openai", "anthropic", "bedrock", "vllm", "custom"] = "openai"
+    id: str = Field(..., min_length=1, pattern=r"^[a-z0-9][a-z0-9\-\.]*$")
+    provider: Literal["openai", "anthropic", "bedrock", "vllm", "google", "custom"] = "openai"
     capabilities: list[str] = Field(
         default_factory=lambda: ["chat"],
         description="e.g. chat, function-calling, embeddings",

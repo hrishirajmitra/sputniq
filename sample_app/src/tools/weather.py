@@ -1,1 +1,0 @@
-def get_weather(location: str):\n    return f'The weather in {location} is sunny.'\n

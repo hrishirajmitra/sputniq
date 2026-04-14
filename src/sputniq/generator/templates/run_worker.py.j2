@@ -1,0 +1,28 @@
+import asyncio
+import os
+from sputniq.runtime.kafka_adapter import run_tool_worker
+import {{ module_path }}
+
+if __name__ == "__main__":
+    brokers = os.environ.get("SPUTNIQ_KAFKA_BROKERS", "kafka.internal:9092")
+    req_topic = os.environ.get("KAFKA_TOPIC_IN", "default-in")
+    res_topic = os.environ.get("KAFKA_TOPIC_OUT", "default-out")
+    
+    # We introspect the module to find either agents or tools
+    func = None
+    for attr in dir({{ module_path }}):
+        val = getattr({{ module_path }}, attr)
+        if callable(val) and not attr.startswith("_"):
+            func = val
+            break
+            
+    if func:
+        asyncio.run(run_tool_worker(
+            func=func, 
+            tool_id="{{ service_id }}", 
+            req_topic=req_topic, 
+            res_topic=res_topic, 
+            brokers=brokers
+        ))
+    else:
+        print("Failed to find callable in {{ module_path }}")
