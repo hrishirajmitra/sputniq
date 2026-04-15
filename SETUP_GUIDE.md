@@ -64,3 +64,19 @@ curl -s -X POST "http://<NODE_IP>:<PORT>/api/ask" \
 ```
 
 The request will seamlessly traverse from the node's API gateway -> LangGraph -> Kafka (to find the worker) -> and finally return the LLM's response!
+
+## 6. Tear Down and Cleanup
+If you ever need to completely restart or clean up your environment:
+
+```bash
+# 1. Take down the API server and Kafka
+docker compose down
+
+# 2. Take down the 15 simulated infrastructure nodes
+cd infrastructure
+docker compose -f docker-compose-nodes.yml down
+cd ..
+
+# 3. Destroy the shared network
+docker network rm sputniq-network
+```

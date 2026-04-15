@@ -21,16 +21,17 @@ def get_inventory() -> List[VMNode]:
     """Retrieve the pool of available VM nodes from Docker."""
     nodes = []
     try:
-        for i in range(1, 16):
-            # Assuming docker-compose-nodes.yml services start with infrastructure-node
-            # Let's just use the default docker-compose container names: infrastructure-node-1-1
-            container_name = f"infrastructure-node-{i}-1"
+        # Find all running containers that match the infrastructure node naming pattern
+        res_ps = subprocess.run(["docker", "ps", "--format", "{{.Names}}"], capture_output=True, text=True)
+        container_names = [n for n in res_ps.stdout.splitlines() if n.startswith("infrastructure-node")]
+        
+        for idx, container_name in enumerate(container_names, start=1):
             res = subprocess.run(["docker", "inspect", "-f", "{{range $k, $v := .NetworkSettings.Networks}}{{$v.IPAddress}}{{end}}", container_name], capture_output=True, text=True)
             ip = res.stdout.strip()
             if ip:
                 nodes.append(VMNode(
-                    id=f"vm-{i:02d}",
-                    hostname=f"node-{i:02d}",
+                    id=f"vm-{idx:02d}",
+                    hostname=container_name,
                     ip_address=ip,
                     username="root"
                 ))

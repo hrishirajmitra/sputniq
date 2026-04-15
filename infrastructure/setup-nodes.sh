@@ -34,19 +34,19 @@ cat << COMPOSE >> docker-compose-nodes.yml
       dockerfile: Dockerfile
     privileged: true
     networks:
-      - sputniq_default
+      - sputniq-network
 COMPOSE
 done
 
 cat << 'COMPOSE' >> docker-compose-nodes.yml
 
 networks:
-  sputniq_default:
+  sputniq-network:
     external: true
 COMPOSE
 
 echo "Building and starting 15 DinD nodes..."
-docker network create sputniq_default || true
+docker network create sputniq-network || true
 docker compose -f docker-compose-nodes.yml up -d --build
 
 echo "Done! Nodes are running."
