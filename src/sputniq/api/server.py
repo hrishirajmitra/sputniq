@@ -3,6 +3,7 @@ import tempfile
 import zipfile
 import json
 import docker
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks
@@ -14,63 +15,96 @@ from sputniq.models.tools import ToolDefinition
 from sputniq.config.parser import load_config, resolve_references, detect_cycles
 from sputniq.config.errors import ConfigError
 from sputniq.ops.deploy import deploy_app, delete_app
+from sputniq.state.registry_store import RegistryStore
 
-app = FastAPI(title="Sputniq AgentOS Control API", version="0.1.0")
+# ── Application lifecycle ──────────────────────────────────────────────────
 
-# Local state to mock registry logic
-_workflows: dict[str, WorkflowDefinition] = {}
-_tools: dict[str, ToolDefinition] = {}
-_apps: dict[str, dict] = {}
+registry = RegistryStore()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Connect to PostgreSQL on startup, disconnect on shutdown."""
+    await registry.connect()
+    yield
+    await registry.disconnect()
+
+
+app = FastAPI(
+    title="Sputniq AgentOS Control API",
+    version="0.1.0",
+    lifespan=lifespan,
+)
+
+
+# ── App endpoints ──────────────────────────────────────────────────────────
+
 
 @app.get("/api/v1/apps")
 async def list_apps():
-    return list(_apps.values())
+    return await registry.list_apps()
+
 
 @app.delete("/api/v1/apps/{app_id}")
 async def delete_application(app_id: str):
-    if app_id not in _apps:
+    app_data = await registry.get_app(app_id)
+    if app_data is None:
         raise HTTPException(status_code=404, detail="App not found")
-        
-    app_data = _apps[app_id]
+
     if delete_app(app_id, app_data.get("nodes", [])):
-        del _apps[app_id]
+        await registry.delete_app(app_id)
         return {"status": "deleted"}
     else:
         raise HTTPException(status_code=500, detail="Failed to delete app")
+
+
+# ── Registry endpoints ─────────────────────────────────────────────────────
+
 
 class RegistryResponse(BaseModel):
     status: str
     count: int
 
+
 @app.post("/api/v1/registry/workflows", response_model=RegistryResponse)
 async def register_workflow(workflow: WorkflowDefinition):
-    _workflows[workflow.id] = workflow
-    return RegistryResponse(status="registered", count=len(_workflows))
+    await registry.save_workflow(workflow)
+    workflows = await registry.list_workflows()
+    return RegistryResponse(status="registered", count=len(workflows))
+
 
 @app.get("/api/v1/registry/workflows", response_model=list[WorkflowDefinition])
 async def list_workflows():
-    return list(_workflows.values())
+    return await registry.list_workflows()
+
 
 @app.get("/api/v1/registry/workflows/{workflow_id}", response_model=WorkflowDefinition)
 async def get_workflow(workflow_id: str):
-    if workflow_id not in _workflows:
+    wf = await registry.get_workflow(workflow_id)
+    if wf is None:
         raise HTTPException(status_code=404, detail="Workflow not found")
-    return _workflows[workflow_id]
+    return wf
+
 
 @app.post("/api/v1/registry/tools", response_model=RegistryResponse)
 async def register_tool(tool: ToolDefinition):
-    _tools[tool.id] = tool
-    return RegistryResponse(status="registered", count=len(_tools))
+    await registry.save_tool(tool)
+    tools = await registry.list_tools()
+    return RegistryResponse(status="registered", count=len(tools))
+
 
 @app.get("/api/v1/registry/tools", response_model=list[ToolDefinition])
 async def list_tools():
-    return list(_tools.values())
+    return await registry.list_tools()
+
 
 @app.get("/api/v1/registry/tools/{tool_id}", response_model=ToolDefinition)
 async def get_tool(tool_id: str):
-    if tool_id not in _tools:
+    tool = await registry.get_tool(tool_id)
+    if tool is None:
         raise HTTPException(status_code=404, detail="Tool not found")
-    return _tools[tool_id]
+    return tool
+
 
 @app.get("/api/v1/registry/deployments")
 async def list_deployments():
@@ -93,52 +127,56 @@ async def list_deployments():
     except Exception as e:
         return {"error": str(e)}
 
+
 @app.post("/api/v1/registry/upload-zip")
 async def upload_agent_zip(file: UploadFile = File(...)):
     """Uploads a zip archive containing a config.json. Extracts and parses it."""
     if not file.filename.endswith('.zip'):
         raise HTTPException(status_code=400, detail="Uploaded file must be a .zip archive")
-        
+
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp_path = Path(tmpdir)
         upload_path = tmp_path / file.filename
-        
+
         with open(upload_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-            
+
         try:
             with zipfile.ZipFile(upload_path, 'r') as zip_ref:
                 zip_ref.extractall(tmp_path / "extracted")
         except zipfile.BadZipFile:
             raise HTTPException(status_code=400, detail="Invalid zip archive")
-            
+
         config_path = tmp_path / "extracted" / "config.json"
         if not config_path.exists():
             config_path = tmp_path / "extracted" / "sputniq.json"
             if not config_path.exists():
-                raise HTTPException(status_code=400, detail="config.json or sputniq.json not found in the root of the archive")
-            
+                raise HTTPException(
+                    status_code=400,
+                    detail="config.json or sputniq.json not found in the root of the archive",
+                )
+
         try:
             config = load_config(config_path)
             resolve_references(config)
             detect_cycles(config)
-            
-            # Register loaded definitions into the in-memory dictionary
+
+            # Persist loaded definitions into PostgreSQL
             if hasattr(config, 'workflows') and config.workflows:
                 for wf in config.workflows:
-                    _workflows[wf.id] = wf
-                    
+                    await registry.save_workflow(wf)
+
             if hasattr(config, 'tools') and config.tools:
                 for tool in config.tools:
-                    _tools[tool.id] = tool
-            
+                    await registry.save_tool(tool)
+
             # Deploy the app (block until finished)
             app_result = deploy_app(config, tmp_path / "extracted")
             if app_result:
-                _apps[app_result["app_id"]] = app_result
-                    
+                await registry.save_app(app_result["app_id"], app_result)
+
             return {
-                "status": "success", 
+                "status": "success",
                 "message": f"Successfully parsed and deployed items from {file.filename}.",
                 "app_id": app_result["app_id"] if app_result else None,
                 "registered_workflows": len(config.workflows) if config.workflows else 0,
@@ -148,6 +186,7 @@ async def upload_agent_zip(file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail=f"Configuration error: {str(e)}")
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
 
 @app.get("/", response_class=HTMLResponse)
 async def get_ui():
@@ -246,7 +285,7 @@ async def get_ui():
                     const workflows = await wfRes.json();
                     document.getElementById('wfCount').innerText = workflows.length;
                     const wfTable = document.getElementById('wfTable');
-                    wfTable.innerHTML = '<tr><th>ID</th><th>Description</th><th>Entrypoint Step</th></tr>' + workflows.map(w => `<tr><td>${w.id}</td><td>${w.description}</td><td>${w.entrypoint}</td></tr>`).join('');
+                    wfTable.innerHTML = '<tr><th>ID</th><th>Description</th><th>Entrypoint Step</th></tr>' + workflows.map(w => `<tr><td>${w.id}</td><td>${w.description}</td><td>${w.entrypoint_step}</td></tr>`).join('');
 
                     const tools = await toolRes.json();
                     document.getElementById('toolCount').innerText = tools.length;
@@ -324,4 +363,3 @@ async def get_ui():
     </body>
     </html>"""
     return HTMLResponse(content=html_content)
-

@@ -1,4 +1,6 @@
 import uuid
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field
@@ -6,8 +8,24 @@ from pydantic import BaseModel, Field
 from sputniq.runtime.coordinator import WorkflowCoordinator
 from sputniq.api.auth import verify_token, TokenData
 from sputniq.observability.metrics import get_metrics_payload
+from sputniq.state.registry_store import RegistryStore
 
-app = FastAPI(title="Sputniq AgentOS Gateway", version="0.1.0")
+# Persistent registry for workflow definition lookup
+registry = RegistryStore()
+
+# In-memory cache of compiled coordinators (hydrated on-demand from DB)
+_coordinator_cache: dict[str, WorkflowCoordinator] = {}
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Connect to PostgreSQL on startup, disconnect on shutdown."""
+    await registry.connect()
+    yield
+    await registry.disconnect()
+
+
+app = FastAPI(title="Sputniq AgentOS Gateway", version="0.1.0", lifespan=lifespan)
 
 class WorkflowExecutionRequest(BaseModel):
     workflow_id: str
@@ -18,17 +36,19 @@ class WorkflowExecutionResponse(BaseModel):
     correlation_id: str
     status: str
 
-# A mock registry to hold our compiled coordinators
-# In a real system, this would be backed by a database and loaded during startup
-coordinators: dict[str, WorkflowCoordinator] = {}
 
 class GatewayService:
     @staticmethod
     @app.post("/api/v1/execute", response_model=WorkflowExecutionResponse)
     async def execute_workflow(req: WorkflowExecutionRequest, current_user: TokenData = Depends(verify_token)):
-        if req.workflow_id not in coordinators:
-            raise HTTPException(status_code=404, detail="Workflow not found")
-            
+        # Check cache first, then fall back to persistent registry
+        if req.workflow_id not in _coordinator_cache:
+            wf_def = await registry.get_workflow(req.workflow_id)
+            if wf_def is None:
+                raise HTTPException(status_code=404, detail="Workflow not found")
+            # Hydrate the coordinator from the persisted definition
+            _coordinator_cache[req.workflow_id] = WorkflowCoordinator(wf_def)
+
         session_id = str(uuid.uuid4())
         correlation_id = str(uuid.uuid4())
         

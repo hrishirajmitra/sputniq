@@ -19,6 +19,7 @@ The UI allows you to visually inspect the running Workflows, monitor Registered 
 To spin up the entire multi-service architecture including the **AgentOS Control API**, **Kafka Message Bus**, and **Zookeeper**, just use `docker compose`:
 
 ```bash
+docker network rm sputniq_default
 # 1. Build and run the whole stack in the background
 docker compose up --build -d
 
@@ -51,24 +52,37 @@ uvicorn sputniq.api.server:app --reload --host 0.0.0.0 --port 8000
 
 ## 🏗️ Generating & Deploying a Sample Agent App
 
-AgentOS supports deploying your entire Agent application (source code and `config.json`) as a single zip archive.
+AgentOS supports deploying your entire Agent application (source code and `sputniq.json` or `config.json`) as a single zip archive.
 
 1. **Generate the dummy deployment**:
-   We have a script to rapidly generate a functional sample app and package it:
+   You can generate and deploy a functional sample application:
 
    ```bash
-   python scripts/create_sample_app.py
+   cd sample_gemini_app/
+   # Package the app to a zip manually or via scripts
    ```
-   *(This creates `sample_app.zip` containing a `config.json` and basic python agents)*
+   *(Ensure it contains `sputniq.json` and basic python agents)*
 
 2. **Deploy via the UI (Easiest)**:
-   Navigate to `http://localhost:8000/` and upload the newly generated `sample_app.zip`. The UI will reflect the deployed services in real-time.
+   Navigate to `http://localhost:8000/` and upload the newly generated app archive. The UI will reflect the deployed services in real-time.
 
 3. **Deploy via CLI/cURL**:
    You can deploy the sample application programmatically to the Control API:
    ```bash
-   curl -X POST -F "file=@sample_app.zip" http://localhost:8000/api/v1/registry/upload-zip
+   curl -X POST -F "file=@your_app.zip" http://localhost:8000/api/v1/registry/upload-zip
    ```
+
+---
+
+## 🖥️ Starting Resource Nodes (App Instance Hosts)
+
+To start the computational nodes that the platform will provision application instances on, execute the infrastructure setup script. This utilizes Docker-in-Docker to quickly spin up agent workers.
+
+```bash
+cd infrastructure
+./setup-nodes.sh
+```
+*This script will generate SSH keys, build the DinD image, and start 15 nodes attached to the `sputniq_default` network.*
 
 ---
 
@@ -76,18 +90,29 @@ AgentOS supports deploying your entire Agent application (source code and `confi
 
 You can orchestrate and manage repos manually via the command line. Ensure you have run `pip install -e .` to activate the CLI.
 
-- **`agentos init .`**: Scaffolds a new AgentOS repository with a standard `config.json` and directories structure.
-- **`agentos validate`**: Runs schema validation, cycle detection, and reference verification against your `config.json`.
-- **`agentos build`**: Generates deployment artifacts (Dockerfiles, requirements) into `.agentos/build`.
-- **`agentos package`**: Bundles local services and logic.
-- **`agentos deploy`**: Orchestrates application deployment (push to orchestrator).
-- **`agentos logs` / `agentos status`**: Display platform metrics and status.
+- **`sputniq init .`** / **`agentos init .`**: Scaffolds a new AgentOS repository with a standard `sputniq.json` and directories structure.
+- **`sputniq validate`**: Runs schema validation, cycle detection, and reference verification against your `config.json`.
+- **`sputniq build`**: Generates deployment artifacts (Dockerfiles, requirements).
+- **`sputniq package`**: Bundles local services and logic.
+- **`sputniq deploy`**: Orchestrates application deployment (push to orchestrator).
 
 ---
 
 ## 📚 Documentation Architecture
 
-For deeper understanding of how AgentOS is put together and scaled:
+For comprehensive platform capabilities, review the system documentation:
+
+**Core Architecture & System Boot**
+- [📖 Platform Architecture & System Flow](Documentation/platform-architecture.md)
+
+**Hack-3 Deliverables (Execution & Verification)**
+- [📖 DEV Process Document (1a)](Documentation/dev-process.md)
+- [📖 Deploy Process Document (2a)](Documentation/deploy-process.md)
+- [📖 Bootstrap Process Document (3a)](Documentation/bootstrap-process.md)
+- [📖 Execution Flow Illustration (4a)](Documentation/execution-flow.md)
+
+**General Project Plans**
 - [📖 Implementation Phases](Documentation/implementation-phases.md)
 - [📖 Project Plan](Documentation/project-plan.md)
 - [📖 Testing & Integration](Documentation/testing-integration-plan.md)
+

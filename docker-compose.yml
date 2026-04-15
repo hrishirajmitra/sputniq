@@ -1,4 +1,21 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sputniq-postgres
+    environment:
+      POSTGRES_USER: sputniq
+      POSTGRES_PASSWORD: sputniq
+      POSTGRES_DB: sputniq
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sputniq"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
     container_name: zookeeper
@@ -37,5 +54,18 @@ services:
       - ./pyproject.toml:/app/pyproject.toml
       - /var/run/docker.sock:/var/run/docker.sock
       - ./infrastructure/.ssh-nodes:/tmp/ssh-keys
+    environment:
+      DATABASE_URL: postgresql://sputniq:sputniq@postgres:5432/sputniq
     depends_on:
-      - kafka
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+
+networks:
+  default:
+    name: sputniq-network
+    external: true
+
+volumes:
+  pgdata:
