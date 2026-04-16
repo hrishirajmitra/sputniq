@@ -1,32 +1,31 @@
 # Sputniq AgentOS
 
 AgentOS is a config-driven orchestration platform for building, deploying, and managing distributed agentic AI systems.
-
-![image](https://img.shields.io/badge/Status-Beta-blue)
-![image](https://img.shields.io/badge/Python-3.11%2B-green)
-
 ---
 
-## ⚡ The Output - The UI
+##  The Output - The UI
 We've added a stunning React-styled Dashboard built directly into the control API. By deploying the platform, you'll be able to access the web UI at `http://localhost:8000/`.
 
 The UI allows you to visually inspect the running Workflows, monitor Registered Tools, and single-click upload the generated zip deployments in an immersive dark mode console setting.
 
 ---
 
-## 🚀 One-Click Run (The Whole Thing)
+## One-Click Run (The Whole Thing)
 
 To spin up the entire multi-service architecture including the **AgentOS Control API**, **Kafka Message Bus**, and **Zookeeper**, just use `docker compose`:
 
 ```bash
+# 0. Create a docket network for shared use 
+docker network create sputniq-network
+
 # 1. Build and run the whole stack in the background
 docker compose up --build -d
 
 # 2. Access the UI
-# 🌐 Navigate your browser to: http://localhost:8000/
+# Navigate your browser to: http://localhost:8000/
 ```
 
-## 🛠️ Manual Installation (For Development)
+## Manual Installation (For Development)
 
 If you don't want to use Docker Compose, you can develop directly against local services:
 
@@ -49,7 +48,7 @@ uvicorn sputniq.api.server:app --reload --host 0.0.0.0 --port 8000
 
 ---
 
-## 🏗️ Generating & Deploying a Sample Agent App
+##  Generating & Deploying a Sample Agent App
 
 AgentOS supports deploying your entire Agent application (source code and `sputniq.json` or `config.json`) as a single zip archive.
 
@@ -73,7 +72,7 @@ AgentOS supports deploying your entire Agent application (source code and `sputn
 
 ---
 
-## 🖥️ Starting Resource Nodes (App Instance Hosts)
+## Starting Resource Nodes (App Instance Hosts)
 
 To start the computational nodes that the platform will provision application instances on, execute the infrastructure setup script. This utilizes Docker-in-Docker to quickly spin up agent workers.
 
@@ -85,7 +84,7 @@ cd infrastructure
 
 ---
 
-## ⌨️ CLI Reference
+## CLI Reference
 
 You can orchestrate and manage repos manually via the command line. Ensure you have run `pip install -e .` to activate the CLI.
 
@@ -97,21 +96,21 @@ You can orchestrate and manage repos manually via the command line. Ensure you h
 
 ---
 
-## 📚 Documentation Architecture
+## Documentation Architecture
 
 For comprehensive platform capabilities, review the system documentation:
 
 **Core Architecture & System Boot**
-- [📖 Platform Architecture & System Flow](Documentation/platform-architecture.md)
+- [ Platform Architecture & System Flow](Documentation/platform-architecture.md)
 
 **Hack-3 Deliverables (Execution & Verification)**
-- [📖 DEV Process Document (1a)](Documentation/dev-process.md)
-- [📖 Deploy Process Document (2a)](Documentation/deploy-process.md)
-- [📖 Bootstrap Process Document (3a)](Documentation/bootstrap-process.md)
-- [📖 Execution Flow Illustration (4a)](Documentation/execution-flow.md)
+- [ DEV Process Document (1a)](Documentation/dev-process.md)
+- [ Deploy Process Document (2a)](Documentation/deploy-process.md)
+- [ Bootstrap Process Document (3a)](Documentation/bootstrap-process.md)
+- [ Execution Flow Illustration (4a)](Documentation/execution-flow.md)
 
 **General Project Plans**
-- [📖 Implementation Phases](Documentation/implementation-phases.md)
-- [📖 Project Plan](Documentation/project-plan.md)
-- [📖 Testing & Integration](Documentation/testing-integration-plan.md)
+- [ Implementation Phases](Documentation/implementation-phases.md)
+- [ Project Plan](Documentation/project-plan.md)
+- [ Testing & Integration](Documentation/testing-integration-plan.md)
 

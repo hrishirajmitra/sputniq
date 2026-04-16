@@ -7,11 +7,11 @@ services:
       POSTGRES_PASSWORD: sputniq
       POSTGRES_DB: sputniq
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sputniq"]
+      test: [ "CMD-SHELL", "pg_isready -U sputniq" ]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -46,16 +46,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: bash -c "mkdir -p /root/.ssh && cp -r /tmp/ssh-keys/* /root/.ssh/ && chown -R root:root /root/.ssh && chmod 600 /root/.ssh/* && uvicorn sputniq.api.server:app --host 0.0.0.0 --port 8000 --reload"
+    command: bash -c "mkdir -p /root/.ssh && if [ -d /tmp/ssh-keys ] && [ \"$(ls -A /tmp/ssh-keys)\" ]; then cp -rv /tmp/ssh-keys/* /root/.ssh/; fi && chown -R root:root /root/.ssh && chmod 700 /root/.ssh && (chmod 600 /root/.ssh/* 2>/dev/null || true) && uvicorn sputniq.api.server:app --host 0.0.0.0 --port 8000 --reload"
     ports:
       - "8000:8000"
     volumes:
-      - ./src:/app/src
-      - ./pyproject.toml:/app/pyproject.toml
+      - ./src:/app/src:z
+      - ./pyproject.toml:/app/pyproject.toml:z
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./infrastructure/.ssh-nodes:/tmp/ssh-keys
+      - ./infrastructure/.ssh-nodes:/tmp/ssh-keys:z
     environment:
       DATABASE_URL: postgresql://sputniq:sputniq@postgres:5432/sputniq
+      PYTHONPATH: /app/src
     depends_on:
       postgres:
         condition: service_healthy
