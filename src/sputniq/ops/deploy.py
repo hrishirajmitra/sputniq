@@ -160,7 +160,7 @@ def deploy_app(config, extract_dir: Path):
                         name=container_name,
                         detach=True,
                         ports={"8080/tcp": None},
-                        extra_hosts={"kafka": "172.18.0.1"},
+                        extra_hosts={"kafka": "172.19.0.1"},
                         environment=container_env
                     )
                     c.reload()

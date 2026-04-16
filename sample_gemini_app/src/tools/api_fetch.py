@@ -1,6 +1,6 @@
 from typing import Dict, Any, Optional
 
-def fetch_api_data(endpoint: str, params: Optional[Dict[str, Any]] = None) -> str:
+async def fetch_api_data(endpoint: str, params: Optional[Dict[str, Any]] = None) -> str:
     """
     Fetch data from an external API endpoint.
     

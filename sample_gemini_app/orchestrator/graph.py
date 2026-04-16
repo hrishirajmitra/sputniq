@@ -5,53 +5,47 @@ from typing import Annotated, TypedDict
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from langchain_core.messages import BaseMessage, SystemMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
 
-# The developer's pure Python resources
-from src.agents.assistant import SYSTEM_PROMPT
-
 # The platform abstracted SDK
-from sputniq.runtime.kafka_adapter import create_kafka_langchain_tool
+from sputniq.runtime.kafka_adapter import create_kafka_langchain_tool, create_kafka_agent_node
 
 class GraphState(TypedDict):
     messages: Annotated[list[BaseMessage], add_messages]
 
 def build_orchestrator() -> StateGraph:
-    """Builds and compiles the functional LangGraph workflow."""
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+    """Builds and compiles the functional LangGraph workflow strictly over Kafka."""
     
-    # 1. The platform automatically bridges the tool to Kafka without the dev doing anything
+    brokers = os.environ.get("SPUTNIQ_KAFKA_BROKERS", "localhost:9092")
+    
+    # 1. Platform tool bridges
     api_fetch_tool = create_kafka_langchain_tool(
         name="custom-api-fetch",
         description="Fetch data from an external API endpoint vi Kafka Event Bus.",
         req_topic=os.environ.get("TOOL_CUSTOM_API_FETCH_REQ", "sp.tools.custom-api-fetch.req"),
         res_topic=os.environ.get("TOOL_CUSTOM_API_FETCH_RES", "sp.tools.custom-api-fetch.res"),
-        brokers=os.environ.get("SPUTNIQ_KAFKA_BROKERS", "localhost:9092")
+        brokers=brokers
     )
     
     tools = [api_fetch_tool]
-    
-    # 2. Setup LLM & Tools
-    llm_forced_tool = llm.bind_tools(tools, tool_choice="custom-api-fetch")
-    llm_standard = llm.bind_tools(tools)
-
-    def agent_node(state: GraphState):
-        messages = state["messages"]
-        if not any(isinstance(m, SystemMessage) for m in messages):
-            messages = [SystemMessage(content=SYSTEM_PROMPT)] + messages
-            
-        print("Invoking LLM...")
-        response = llm_forced_tool.invoke(messages)
-        return {"messages": [response]}
-        
-    def final_response_node(state: GraphState):
-        response = llm_standard.invoke(state["messages"])
-        return {"messages": [response]}
-
     tool_node = ToolNode(tools)
+
+    # 2. Platform agent bridges
+    agent_node = create_kafka_agent_node(
+        agent_id="api-assistant",
+        req_topic=os.environ.get("AGENT_API_ASSISTANT_REQ", "sp.agents.api-assistant.req"),
+        res_topic=os.environ.get("AGENT_API_ASSISTANT_RES", "sp.agents.api-assistant.res"),
+        brokers=brokers
+    )
+
+    final_response_node = create_kafka_agent_node(
+        agent_id="api-assistant-final",
+        req_topic=os.environ.get("AGENT_API_ASSISTANT_FINAL_REQ", "sp.agents.api-assistant-final.req"),
+        res_topic=os.environ.get("AGENT_API_ASSISTANT_FINAL_RES", "sp.agents.api-assistant-final.res"),
+        brokers=brokers
+    )
 
     def should_continue(state: GraphState):
         messages = state["messages"]
