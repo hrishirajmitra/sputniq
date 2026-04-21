@@ -2,8 +2,8 @@
     "platform": {
         "name": "gemini-sample-app",
         "env": {
-            "GEMINI_API_KEY": "AIzaSyA9gdhkLx3187dIF2sovdpCUzzhyBgj_NI",
-            "GOOGLE_API_KEY": "AIzaSyA9gdhkLx3187dIF2sovdpCUzzhyBgj_NI"
+            "GEMINI_API_KEY": "GEMINI_API_KEY",
+            "GOOGLE_API_KEY": "GOOGLE_API_KEY"
         }
     },
     "models": [

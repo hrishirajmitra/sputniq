@@ -4,7 +4,7 @@ services:
     container_name: sputniq-postgres
     environment:
       POSTGRES_USER: sputniq
-      POSTGRES_PASSWORD: sputniq
+      POSTGRES_PASSWORD: password
       POSTGRES_DB: sputniq
     ports:
       - "5432:5432"
